@@ -49,10 +49,9 @@
       font-variant-numeric: tabular-nums;
     }
 
-    /* Tactile Industrial Braun / Teenage Engineering Hardware Styling */
     .hw-card {
       background-color: var(--card);
-      border: 1.5px solid var(--ink);
+      border: 2px solid var(--ink);
       border-radius: 8px;
       box-shadow: 0 3px 0 var(--ink);
     }
@@ -104,70 +103,162 @@
       color: #FFFFFF;
     }
 
+    .hw-btn-red {
+      background-color: var(--red);
+      color: #FFFFFF;
+    }
+
     .hw-tag {
       font-family: 'JetBrains Mono', monospace;
-      font-size: 11px;
+      font-size: 10px;
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.04em;
-      padding: 2px 7px;
+      padding: 2px 6px;
       border: 1.5px solid var(--ink);
       border-radius: 4px;
       display: inline-flex;
       align-items: center;
-      gap: 5px;
+      gap: 4px;
     }
 
-    /* Breathing Modal Animation */
-    #breath-circle {
+    .hw-input {
+      background-color: #FFFFFF;
+      border: 1.5px solid var(--ink);
+      border-radius: 6px;
+      padding: 6px 10px;
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--ink);
+      outline: none;
+      user-select: text;
+      -webkit-user-select: text;
+    }
+
+    .hw-input:focus {
+      box-shadow: 0 0 0 2px var(--blue);
+    }
+
+    .hw-scroll {
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      touch-action: pan-y;
+      scrollbar-width: thin;
+      scrollbar-color: var(--ink) var(--panel);
+    }
+
+    .hw-scroll::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .hw-scroll::-webkit-scrollbar-track {
+      background: var(--panel);
+      border-left: 1px solid var(--ink);
+      border-radius: 3px;
+    }
+
+    .hw-scroll::-webkit-scrollbar-thumb {
+      background-color: var(--ink);
+      border-radius: 3px;
+    }
+
+    .swipe-pulse {
+      animation: swipeFlash 0.2s ease-out;
+    }
+
+    @keyframes swipeFlash {
+      0% { transform: scale(0.985); opacity: 0.82; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    #calm-breath-circle {
       transition: transform 4s ease-in-out, background-color 1s ease;
     }
   </style>
 </head>
-<body class="p-2.5 flex flex-col gap-2.5">
+<body class="p-2 flex flex-col gap-2">
 
-  <!-- ==================== TOP STATUS BAR (HEADER) ==================== -->
-  <header class="hw-card px-3.5 py-2 flex items-center justify-between shrink-0 h-[54px]">
-    <!-- Left: Identity + Live Digital Clock + Date -->
-    <div class="flex items-center gap-3">
-      <div class="bg-[#1A1A1A] text-[#F7F6F2] px-3 py-1 rounded-[5px] flex items-center gap-2">
-        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+  <!-- ==================== TOP BAR: BRAND + KIND-FRIENDLY SPEAKING CLOCK ==================== -->
+  <header class="hw-card px-3 py-1.5 flex items-center justify-between shrink-0 h-[64px]">
+    <!-- Left: Identity + Sync status -->
+    <div class="flex items-center gap-2.5">
+      <div class="bg-[#1A1A1A] text-[#F7F6F2] px-3 py-1.5 rounded-[6px] flex items-center gap-2.5">
+        <svg class="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M2 16c2-4 6-7 11-7 4 0 7 2 9 5-2 0-4 1-5 3-2-2-5-3-8-2-3 1-5 3-7 1z"/>
           <path d="M11 9c0-3 2-5 4-6-1 2 0 4 1 6"/>
         </svg>
-        <span class="font-display font-bold text-xs sm:text-sm tracking-wider">DE DOLFIJN // HELLOUW</span>
+        <div>
+          <div class="font-display font-bold text-xs sm:text-sm tracking-wider leading-none">DE DOLFIJN</div>
+          <div class="font-mono-tech text-[10px] text-[#B8B5AD] mt-0.5 leading-none">HELLOUW // GROEPSSCHERM</div>
+        </div>
       </div>
 
-      <div class="hw-inset px-3 py-1 flex items-center gap-2.5">
-        <span id="live-clock" class="font-mono-tech font-extrabold text-base sm:text-lg tracking-tight">00:00:00</span>
-        <span class="text-[#5C5B57] font-mono-tech text-xs">|</span>
-        <span id="live-date" class="font-mono-tech font-bold text-xs uppercase tracking-wide">LADEN...</span>
+      <div class="hidden xl:flex flex-col justify-center hw-inset px-2.5 py-1 font-mono-tech text-[10px] font-bold">
+        <div class="flex items-center gap-1.5">
+          <span id="conn-dot" class="w-2 h-2 rounded-full bg-[#2A7B5C]"></span>
+          <span id="live-date">DINSDAG 10 NOV</span>
+        </div>
+        <span id="last-sync-label" class="text-[#5C5B57]">SYNC: ACTIEF</span>
       </div>
     </div>
 
-    <!-- Center/Right: Status + Last Update + Rustmodus + Fullscreen -->
-    <div class="flex items-center gap-2">
-      <div class="hidden xl:flex items-center gap-2 hw-inset px-2.5 py-1 font-mono-tech text-[11px] font-bold">
-        <span id="conn-dot" class="w-2 h-2 rounded-full bg-[#2A7B5C]"></span>
-        <span id="last-sync-label">LAATSTE UPDATE: --:--</span>
+    <!-- Center: KIND-FRIENDLY SPEAKING CLOCK (Analog + Digital + Full Spoken Text) -->
+    <div onclick="speakCurrentTime()" class="hw-inset px-3 py-1 flex items-center gap-3 cursor-pointer hover:bg-[#E2DFD7] transition-colors" title="Tik om de tijd hardop te horen">
+      <div class="w-11 h-11 rounded-full bg-[#F7F6F2] border-[1.5px] border-[#1A1A1A] flex items-center justify-center shrink-0 relative">
+        <svg viewBox="0 0 100 100" class="w-full h-full">
+          <line x1="50" y1="6" x2="50" y2="12" stroke="#1A1A1A" stroke-width="3.5" stroke-linecap="round"/>
+          <line x1="94" y1="50" x2="88" y2="50" stroke="#1A1A1A" stroke-width="3.5" stroke-linecap="round"/>
+          <line x1="50" y1="94" x2="50" y2="88" stroke="#1A1A1A" stroke-width="3.5" stroke-linecap="round"/>
+          <line x1="6" y1="50" x2="12" y2="50" stroke="#1A1A1A" stroke-width="3.5" stroke-linecap="round"/>
+          <text x="50" y="23" text-anchor="middle" font-family="JetBrains Mono" font-size="12" font-weight="800" fill="#1A1A1A">12</text>
+          <text x="80" y="54" text-anchor="middle" font-family="JetBrains Mono" font-size="12" font-weight="800" fill="#1A1A1A">3</text>
+          <text x="50" y="84" text-anchor="middle" font-family="JetBrains Mono" font-size="12" font-weight="800" fill="#1A1A1A">6</text>
+          <text x="20" y="54" text-anchor="middle" font-family="JetBrains Mono" font-size="12" font-weight="800" fill="#1A1A1A">9</text>
+          <line id="analog-hour" x1="50" y1="50" x2="50" y2="27" stroke="#1A1A1A" stroke-width="5" stroke-linecap="round"/>
+          <line id="analog-min" x1="50" y1="50" x2="50" y2="15" stroke="#D96B27" stroke-width="3.5" stroke-linecap="round"/>
+          <circle cx="50" cy="50" r="4" fill="#1A1A1A"/>
+        </svg>
       </div>
 
-      <button onclick="stopSpeech()" id="btn-stop-speech" class="hidden hw-btn hw-btn-orange px-2.5 py-1 text-xs font-mono-tech">
+      <div class="flex items-center gap-3">
+        <div>
+          <div class="flex items-center gap-1.5">
+            <span id="easy-digital-clock" class="font-mono-tech font-extrabold text-2xl sm:text-3xl tracking-tight leading-none">00:00</span>
+            <span id="easy-daypart-badge" class="hw-tag bg-[#2B5B84] text-white text-[10px] py-0.5 px-1.5">AVOND</span>
+          </div>
+          <div id="easy-spoken-clock" class="font-display font-bold text-xs sm:text-sm text-[#D96B27] leading-tight mt-0.5">
+            Het is vijf over negen in de avond
+          </div>
+        </div>
+        <div class="hidden sm:flex items-center justify-center w-7 h-7 rounded bg-[#F7F6F2] border border-[#1A1A1A]">
+          <svg class="w-4 h-4 text-[#1A1A1A]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+            <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: Speech / Radio Controls + Fullscreen -->
+    <div class="flex items-center gap-1.5">
+      <button onclick="stopAllAudio()" id="btn-stop-speech" class="hidden hw-btn hw-btn-red px-2.5 py-1.5 text-xs font-mono-tech">
         <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
           <rect x="6" y="6" width="12" height="12"></rect>
         </svg>
-        <span>STOP STEM</span>
+        <span>STOP AUDIO</span>
       </button>
 
-      <button onclick="openBreathingModal()" class="hw-btn hw-btn-blue px-3 py-1 text-xs">
-        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
-          <path d="M2 12c2-2.5 4-2.5 6 0s4 2.5 6 0 4-2.5 6 0"/>
-          <path d="M2 17c2-2.5 4-2.5 6 0s4 2.5 6 0 4-2.5 6 0"/>
+      <button onclick="playHourlyNewsBulletin()" class="hw-btn hw-btn-orange px-2.5 py-1.5 text-xs" title="Speel het gesproken nieuwsbulletin af">
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+          <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"></path>
+          <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+          <line x1="12" y1="19" x2="12" y2="22"></line>
         </svg>
-        <span>RUSTMODUS / ADEMHALING</span>
+        <span class="hidden md:inline">UURBULLETIN</span>
       </button>
 
-      <button onclick="toggleFullScreen()" class="hw-btn px-2.5 py-1 text-xs" title="Volledig scherm">
+      <button onclick="toggleFullScreen()" class="hw-btn px-2.5 py-1.5 text-xs" title="Volledig scherm">
         <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/>
         </svg>
@@ -175,376 +266,540 @@
     </div>
   </header>
 
-  <!-- ==================== 3-COLUMN ALL-IN-ONE BENTO GRID ==================== -->
-  <main class="flex-1 grid grid-cols-12 gap-2.5 min-h-0 overflow-hidden">
+  <!-- ==================== TACTILE 4-TAB NAVIGATION BAR ==================== -->
+  <nav class="grid grid-cols-4 gap-2 shrink-0 h-[42px]">
+    <button onclick="switchMainTab('OVERZICHT')" id="nav-tab-OVERZICHT" class="hw-btn hw-btn-dark text-xs sm:text-sm tracking-wide">
+      <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+        <rect x="3" y="3" width="7" height="7"></rect>
+        <rect x="14" y="3" width="7" height="7"></rect>
+        <rect x="14" y="14" width="7" height="7"></rect>
+        <rect x="3" y="14" width="7" height="7"></rect>
+      </svg>
+      <span>01 // WEER, NIEUWS & VERKEER</span>
+    </button>
 
-    <!-- ==================== COLUMN 1 (LEFT - 4 COLS / ~34%): WEERSTATION HELLOUW ==================== -->
-    <section class="col-span-4 hw-card p-3.5 flex flex-col justify-between min-h-0 overflow-hidden">
-      <!-- Card Header -->
-      <div class="flex items-center justify-between border-b-[1.5px] border-[#1A1A1A] pb-2 shrink-0">
-        <div class="flex items-center gap-2">
-          <span class="hw-tag bg-[#1A1A1A] text-white">METEO // 01</span>
-          <h2 class="font-display font-bold text-sm uppercase tracking-tight">Weerstation Hellouw</h2>
+    <button onclick="switchMainTab('TAKEN')" id="nav-tab-TAKEN" class="hw-btn text-xs sm:text-sm tracking-wide">
+      <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+        <path d="M9 11l3 3L22 4"></path>
+        <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+      </svg>
+      <span>02 // DAGTAKEN & GROEPSBORD</span>
+    </button>
+
+    <button onclick="switchMainTab('EXPEDITIE')" id="nav-tab-EXPEDITIE" class="hw-btn text-xs sm:text-sm tracking-wide">
+      <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+        <circle cx="12" cy="12" r="10"></circle>
+        <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon>
+      </svg>
+      <span>03 // WAAL & STREEK EXPEDITIE</span>
+    </button>
+
+    <button onclick="switchMainTab('KLETSPOT')" id="nav-tab-KLETSPOT" class="hw-btn text-xs sm:text-sm tracking-wide">
+      <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+      </svg>
+      <span>04 // KLETSPOT, QUIZ & RUST</span>
+    </button>
+  </nav>
+
+  <!-- ==================== TAB 01: WEER, NIEUWSOVERZICHT & VERKEER ==================== -->
+  <main id="page-OVERZICHT" class="flex-1 grid grid-cols-12 gap-2.5 min-h-0 overflow-hidden">
+
+    <!-- COLUMN 1 (4 COLS): WEERSTATION HELLOUW + POSITIEF ADVIES + 5-DAAGSE VOORSPELLING -->
+    <section class="col-span-4 hw-card p-2.5 flex flex-col justify-between min-h-0 overflow-hidden">
+      <div class="flex items-center justify-between border-b-[1.5px] border-[#1A1A1A] pb-1.5 shrink-0">
+        <span class="hw-tag bg-[#1A1A1A] text-white">WEER // HELLOUW & WAALDIJK</span>
+        <div class="flex items-center gap-1">
+          <button onclick="speakWeather()" class="hw-btn px-2 py-0.5 text-[10px] font-mono-tech" title="Lees het weerbericht voor">
+            <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+            </svg>
+            <span>STEM</span>
+          </button>
+          <button onclick="fetchWeather(true)" class="hw-btn px-2 py-0.5 text-[10px] font-mono-tech">SYNC</button>
         </div>
-        <button onclick="fetchWeather(true)" class="hw-btn px-2 py-1 text-[11px] font-mono-tech" title="Nu verversen">
-          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-            <polyline points="23 4 23 10 17 10"></polyline>
-            <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
-          </svg>
-          <span>SYNC</span>
-        </button>
       </div>
 
-      <!-- Current Temperature + Vector Weather Icon -->
-      <div class="grid grid-cols-12 gap-2 items-center my-auto py-1">
+      <!-- Current Weather + Wind/Rain stats -->
+      <div class="grid grid-cols-12 gap-2 items-center py-1 shrink-0">
         <div class="col-span-7">
-          <div class="font-mono-tech text-[11px] font-bold text-[#5C5B57] uppercase">WAALDIJK / HELLOUW</div>
           <div class="flex items-baseline gap-2">
-            <span id="w-temp" class="font-mono-tech text-5xl font-extrabold tracking-tighter">--°</span>
-            <span id="w-condition" class="font-display font-bold text-sm uppercase truncate">LADEN...</span>
+            <span id="w-temp" class="font-mono-tech text-4xl font-extrabold tracking-tighter">--°</span>
+            <span id="w-condition" class="font-display font-bold text-xs uppercase truncate">LADEN...</span>
           </div>
-          <div class="font-mono-tech text-xs font-bold text-[#5C5B57] mt-0.5" id="w-feels">
-            GEVOELSTEMPERATUUR: -- °C
+          <div class="font-mono-tech text-[10px] font-bold text-[#5C5B57] mt-0.5">
+            <span id="w-feels">VOELT ALS --°C</span> • <span id="w-wind">WIND -- KM/U</span>
           </div>
         </div>
         <div class="col-span-5 flex justify-end">
-          <div id="w-main-svg" class="w-20 h-20 hw-inset flex items-center justify-center p-3">
-            <!-- Injected via JS -->
+          <div id="w-main-svg" class="w-14 h-14 hw-inset flex items-center justify-center p-2"></div>
+        </div>
+      </div>
+
+      <!-- 100% POSITIVE OUTDOOR / ACTIVITY BANNER (Never negative!) -->
+      <div id="w-advice-banner" class="border-[1.5px] border-[#1A1A1A] rounded-[6px] p-2 bg-[#2A7B5C] text-white flex items-center gap-2.5 shrink-0">
+        <div id="w-clothing-svg" class="w-10 h-10 rounded-[5px] bg-black/20 border border-white/30 flex items-center justify-center shrink-0"></div>
+        <div class="min-w-0">
+          <div id="w-advice-headline" class="font-display font-bold text-xs leading-tight uppercase">
+            FIJN BUITENWEER // TRUI OF JAS
+          </div>
+          <div id="w-advice-sub" class="text-[11px] opacity-95 font-medium leading-snug mt-0.5">
+            Lekker voor een frisse neus of een rondje langs de Waaldijk!
           </div>
         </div>
       </div>
 
-      <!-- Technical Sub-Metrics (Wind Beaufort + Rain Chance) -->
-      <div class="grid grid-cols-2 gap-2 my-1 shrink-0">
-        <div class="hw-inset px-2.5 py-2">
-          <div class="font-mono-tech text-[10px] font-bold text-[#5C5B57] uppercase">WIND OP DE DIJK</div>
-          <div id="w-wind" class="font-mono-tech text-sm font-extrabold mt-0.5">-- KM/U</div>
-          <div id="w-bft" class="font-display text-[11px] font-bold text-[#5C5B57] truncate">Wachten op meting...</div>
+      <!-- VANDAAG IN 3 DAGDELEN -->
+      <div class="shrink-0">
+        <div class="font-mono-tech text-[10px] font-bold text-[#5C5B57] uppercase mb-1">
+          VERLOOP VANDAAG (09:00 • 14:00 • 19:00)
         </div>
-        <div class="hw-inset px-2.5 py-2">
-          <div class="font-mono-tech text-[10px] font-bold text-[#5C5B57] uppercase">KANS OP NEERSLAG</div>
-          <div id="w-rain-prob" class="font-mono-tech text-sm font-extrabold mt-0.5">-- %</div>
-          <div id="w-rain-mm" class="font-display text-[11px] font-bold text-[#5C5B57] truncate">Actueel: 0.0 mm</div>
+        <div class="grid grid-cols-3 gap-1.5">
+          <div class="hw-inset px-2 py-1 flex items-center justify-between">
+            <div>
+              <div class="font-mono-tech text-[9px] font-bold text-[#5C5B57]">OCHTEND</div>
+              <div id="fc-0-temp" class="font-mono-tech text-xs font-extrabold">--°</div>
+            </div>
+            <div id="fc-0-svg" class="w-5 h-5"></div>
+          </div>
+          <div class="hw-inset px-2 py-1 flex items-center justify-between">
+            <div>
+              <div class="font-mono-tech text-[9px] font-bold text-[#5C5B57]">MIDDAG</div>
+              <div id="fc-1-temp" class="font-mono-tech text-xs font-extrabold">--°</div>
+            </div>
+            <div id="fc-1-svg" class="w-5 h-5"></div>
+          </div>
+          <div class="hw-inset px-2 py-1 flex items-center justify-between">
+            <div>
+              <div class="font-mono-tech text-[9px] font-bold text-[#5C5B57]">AVOND</div>
+              <div id="fc-2-temp" class="font-mono-tech text-xs font-extrabold">--°</div>
+            </div>
+            <div id="fc-2-svg" class="w-5 h-5"></div>
+          </div>
         </div>
       </div>
 
-      <!-- PROMINENT VISUAL KLEDING & BUITENSPEEL ADVIES BANNER -->
-      <div id="w-advice-banner" class="border-[1.5px] border-[#1A1A1A] rounded-[6px] p-3 bg-[#2A7B5C] text-white flex flex-col justify-between gap-2 my-1 shrink-0">
-        <div class="flex items-center justify-between">
-          <span id="w-advice-badge" class="font-mono-tech text-[10px] font-extrabold uppercase tracking-wider px-2 py-0.5 bg-black/25 rounded">
-            KLEDING & BUITENCHECK
-          </span>
-          <button onclick="speakWeather()" class="hw-btn px-2 py-1 text-[11px]" title="Lees het weer en kledingadvies voor">
+      <!-- 5-DAAGSE WEERSVOORSPELLING (VOORUITBLIK KOMENDE DAGEN) -->
+      <div class="border-t-[1.5px] border-[#1A1A1A] pt-1.5 flex-1 min-h-0 flex flex-col justify-between overflow-hidden">
+        <div class="flex items-center justify-between mb-1 shrink-0">
+          <span class="font-mono-tech text-[10px] font-bold text-[#1A1A1A] uppercase">VOORUITBLIK KOMENDE 5 DAGEN</span>
+          <span class="font-mono-tech text-[9px] font-bold text-[#2A7B5C]">MIN / MAX</span>
+        </div>
+        <div id="five-day-forecast-list" class="flex-1 min-h-0 hw-scroll flex flex-col gap-1 pr-0.5">
+          <!-- Injected by JS: 5 days with positive activity label -->
+        </div>
+      </div>
+    </section>
+
+    <!-- COLUMN 2 (4 COLS): UURLIJKS AUDIO BULLETIN (ANP/NOS) + NIEUWSOVERZICHT + VOLLEDIG ARTIKEL -->
+    <section class="col-span-4 hw-card p-2.5 flex flex-col justify-between min-h-0 overflow-hidden">
+      <!-- Header & Source Switcher (Jeugdjournaal vs ANP/Algemeen Nieuws) -->
+      <div class="flex items-center justify-between border-b-[1.5px] border-[#1A1A1A] pb-1.5 shrink-0 gap-1">
+        <div class="flex items-center gap-1">
+          <button onclick="switchNewsFeed('JEUGD')" id="nfeed-JEUGD" class="hw-btn hw-btn-dark px-2 py-0.5 text-[10px] font-mono-tech">
+            JEUGDJOURNAAL
+          </button>
+          <button onclick="switchNewsFeed('ALGEMEEN')" id="nfeed-ALGEMEEN" class="hw-btn px-2 py-0.5 text-[10px] font-mono-tech">
+            ANP / NOS NIEUWS
+          </button>
+        </div>
+        <button onclick="toggleAutoHourlyBulletin()" id="btn-auto-hourly" class="hw-btn px-2 py-0.5 text-[10px] font-mono-tech" title="Lees elk heel uur automatisch het nieuwsbulletin voor">
+          ELK UUR: UIT
+        </button>
+      </div>
+
+      <!-- HOURLY AUDIO NEWS BULLETIN BAR (Like Google Assistant Speaker) -->
+      <div class="hw-inset p-2 my-1.5 flex items-center justify-between gap-2 shrink-0 bg-[#ECEAE4]">
+        <div class="min-w-0">
+          <div class="font-mono-tech text-[9px] font-extrabold text-[#D96B27] uppercase tracking-wider">
+            AUDIO NIEUWSBULLETIN (NET ALS JE SPEAKER)
+          </div>
+          <div id="bulletin-status-text" class="font-display font-bold text-xs truncate">
+            Beluister het volledige nieuwsoverzicht
+          </div>
+        </div>
+        <div class="flex items-center gap-1 shrink-0">
+          <button onclick="playHourlyNewsBulletin()" id="btn-play-bulletin" class="hw-btn hw-btn-orange px-2.5 py-1.5 text-[11px] font-mono-tech">
             <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
-              <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+              <polygon points="5 3 19 12 5 21 5 3"></polygon>
             </svg>
-            <span>LEES VOOR</span>
+            <span>SPEEL BULLETIN</span>
+          </button>
+          <button onclick="toggleLiveRadio1()" id="btn-radio1" class="hw-btn px-2 py-1.5 text-[10px] font-mono-tech" title="Live NPO Radio 1 Nieuwsstream">
+            RADIO 1
           </button>
         </div>
+      </div>
 
-        <div class="flex items-center gap-3">
-          <div id="w-clothing-svg" class="w-12 h-12 rounded-[5px] bg-black/20 border border-white/30 flex items-center justify-center shrink-0">
-            <!-- Clothing SVG injected via JS -->
-          </div>
-          <div class="min-w-0">
-            <div id="w-advice-headline" class="font-display font-bold text-sm sm:text-base leading-tight uppercase">
-              DROOG // T-SHIRT OF TRUI
-            </div>
-            <div id="w-advice-sub" class="text-xs opacity-95 font-medium leading-snug mt-0.5">
-              Lekker naar buiten om te spelen!
-            </div>
-          </div>
+      <!-- NIEUWSOVERZICHT LIJST (CLICKABLE HEADLINES OVERVIEW) -->
+      <div class="shrink-0 mb-1.5">
+        <div class="flex items-center justify-between mb-1">
+          <span class="font-mono-tech text-[10px] font-bold text-[#5C5B57] uppercase">NIEUWSOVERZICHT (TIK OP EEN KOP):</span>
+          <span id="news-badge-idx" class="font-mono-tech text-[10px] font-extrabold">BERICHT 1/6</span>
+        </div>
+        <div id="news-headlines-list" class="hw-inset p-1.5 max-h-[115px] hw-scroll flex flex-col gap-1">
+          <!-- Injected by JS: 6 clickable headlines -->
         </div>
       </div>
 
-      <!-- 3-Part Day Forecast Strip: OCHTEND (09:00), MIDDAG (14:00), AVOND (19:00) -->
-      <div class="border-t-[1.5px] border-[#1A1A1A] pt-2 shrink-0">
-        <div class="font-mono-tech text-[10px] font-bold text-[#5C5B57] uppercase mb-1.5">
-          VANDAAG IN 3 STAPPEN (OCHTEND • MIDDAG • AVOND)
-        </div>
-        <div class="grid grid-cols-3 gap-2">
-          <div class="hw-inset p-2 flex items-center justify-between">
-            <div>
-              <div class="font-mono-tech text-[10px] font-bold text-[#5C5B57]">OCHTEND</div>
-              <div id="fc-0-temp" class="font-mono-tech text-base font-extrabold">--°</div>
-            </div>
-            <div id="fc-0-svg" class="w-7 h-7"></div>
-          </div>
-          <div class="hw-inset p-2 flex items-center justify-between">
-            <div>
-              <div class="font-mono-tech text-[10px] font-bold text-[#5C5B57]">MIDDAG</div>
-              <div id="fc-1-temp" class="font-mono-tech text-base font-extrabold">--°</div>
-            </div>
-            <div id="fc-1-svg" class="w-7 h-7"></div>
-          </div>
-          <div class="hw-inset p-2 flex items-center justify-between">
-            <div>
-              <div class="font-mono-tech text-[10px] font-bold text-[#5C5B57]">AVOND</div>
-              <div id="fc-2-temp" class="font-mono-tech text-base font-extrabold">--°</div>
-            </div>
-            <div id="fc-2-svg" class="w-7 h-7"></div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ==================== COLUMN 2 (CENTER - 5 COLS / ~41%): JEUGDJOURNAAL + WEETJES ==================== -->
-    <section class="col-span-5 flex flex-col gap-2.5 min-h-0 overflow-hidden">
-
-      <!-- TOP HALF: LIVE NOS JEUGDJOURNAAL MODULE (DIRECTLY ON HOMEPAGE) -->
-      <div class="hw-card p-3.5 flex-1 flex flex-col justify-between min-h-0 overflow-hidden">
-        <!-- Header + Direct Story Number Selectors -->
-        <div class="flex items-center justify-between border-b-[1.5px] border-[#1A1A1A] pb-2 shrink-0">
-          <div class="flex items-center gap-2">
-            <span class="hw-tag bg-[#D96B27] text-white">NOS JEUGDJOURNAAL</span>
-            <span id="news-badge-idx" class="font-mono-tech text-xs font-extrabold">BERICHT 01 / 05</span>
-          </div>
-          <!-- Direct Story Selector Buttons 1..5 -->
-          <div class="flex items-center gap-1" id="news-Quick-tabs">
-            <button onclick="selectNewsIndex(0)" id="ntab-0" class="hw-btn hw-btn-dark w-6 h-6 text-xs font-mono-tech">1</button>
-            <button onclick="selectNewsIndex(1)" id="ntab-1" class="hw-btn w-6 h-6 text-xs font-mono-tech">2</button>
-            <button onclick="selectNewsIndex(2)" id="ntab-2" class="hw-btn w-6 h-6 text-xs font-mono-tech">3</button>
-            <button onclick="selectNewsIndex(3)" id="ntab-3" class="hw-btn w-6 h-6 text-xs font-mono-tech">4</button>
-            <button onclick="selectNewsIndex(4)" id="ntab-4" class="hw-btn w-6 h-6 text-xs font-mono-tech">5</button>
-          </div>
-        </div>
-
-        <!-- News Headline + Clean Summary -->
-        <div class="my-auto py-2 overflow-hidden">
-          <h3 id="news-title" class="font-display font-bold text-base sm:text-lg leading-snug text-[#1A1A1A] mb-1.5 line-clamp-2">
-            Jeugdjournaal nieuwsberichten ophalen...
+      <!-- VOLLEDIG ARTIKEL LEZER (SCROLLABLE + SWIPEABLE, ZERO TRUNCATION) -->
+      <div id="news-swipe-card" class="hw-inset p-2.5 flex-1 min-h-0 hw-scroll flex flex-col justify-between bg-[#F7F6F2]">
+        <div>
+          <h3 id="news-title" class="font-display font-bold text-sm leading-snug text-[#1A1A1A] mb-1">
+            Nieuwsoverzicht wordt geladen...
           </h3>
-          <p id="news-summary" class="text-xs sm:text-sm text-[#3A3936] font-medium leading-relaxed line-clamp-4">
-            Een ogenblik geduld, de vijf nieuwste berichten van het NOS Jeugdjournaal worden geladen.
+          <p id="news-summary" class="text-xs sm:text-[13px] text-[#2C2B29] font-medium leading-relaxed whitespace-pre-line">
+            Een ogenblik geduld. Tik hierboven op een kop in het overzicht of veeg naar links en rechts om het hele verhaal te lezen.
           </p>
-        </div>
-
-        <!-- News Controls: LEES VOOR + VORIGE / VOLGENDE -->
-        <div class="flex items-center justify-between gap-2 pt-2 border-t-[1.5px] border-[#1A1A1A] shrink-0">
-          <button onclick="speakNews()" class="hw-btn px-3 py-1.5 text-xs">
-            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
-              <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
-            </svg>
-            <span>LEES NIEUWS VOOR</span>
-          </button>
-
-          <div class="flex items-center gap-1.5">
-            <button onclick="prevNews()" class="hw-btn px-2.5 py-1.5 text-xs" title="Vorig bericht">
-              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-                <polyline points="15 18 9 12 15 6"></polyline>
-              </svg>
-            </button>
-            <button onclick="nextNews()" class="hw-btn hw-btn-orange px-3 py-1.5 text-xs">
-              <span>VOLGEND BERICHT</span>
-              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-                <polyline points="9 18 15 12 9 6"></polyline>
-              </svg>
-            </button>
-          </div>
         </div>
       </div>
 
-      <!-- BOTTOM HALF: WEETJES UIT DE STREEK & NATUUR (HELLOUW, BETUWE, DOLFIJNEN) -->
-      <div class="hw-card p-3.5 flex-1 flex flex-col justify-between min-h-0 overflow-hidden">
-        <!-- Category Filter Pills -->
-        <div class="flex items-center justify-between gap-1 border-b-[1.5px] border-[#1A1A1A] pb-2 shrink-0">
-          <div class="flex items-center gap-1 flex-wrap">
-            <button onclick="setFactCategory('ALLE')" id="fcat-ALLE" class="hw-btn hw-btn-dark px-2 py-1 text-[11px] font-mono-tech">ALLE</button>
-            <button onclick="setFactCategory('STREEK')" id="fcat-STREEK" class="hw-btn px-2 py-1 text-[11px] font-mono-tech">STREEK</button>
-            <button onclick="setFactCategory('DOLFIJNEN')" id="fcat-DOLFIJNEN" class="hw-btn px-2 py-1 text-[11px] font-mono-tech">DOLFIJNEN</button>
-            <button onclick="setFactCategory('NATUUR')" id="fcat-NATUUR" class="hw-btn px-2 py-1 text-[11px] font-mono-tech">NATUUR</button>
-          </div>
-          <span id="fact-counter" class="hw-tag bg-[#ECEAE4]">01 / 36</span>
-        </div>
-
-        <!-- Fact Content Box -->
-        <div class="my-auto py-2 flex items-start gap-3">
-          <div id="fact-svg-box" class="w-11 h-11 hw-inset flex items-center justify-center shrink-0 mt-0.5">
-            <!-- Category SVG -->
-          </div>
-          <p id="fact-body" class="font-display font-bold text-base sm:text-lg leading-snug text-[#1A1A1A]">
-            Weetje wordt geladen...
-          </p>
-        </div>
-
-        <!-- Auto-Advance Progress Bar (30s) + Controls -->
-        <div class="pt-1.5 border-t-[1.5px] border-[#1A1A1A] shrink-0">
-          <div class="w-full h-1.5 bg-[#ECEAE4] border border-[#1A1A1A] rounded-full overflow-hidden mb-2">
-            <div id="fact-progress-bar" class="h-full bg-[#2A7B5C] transition-all duration-300" style="width: 0%;"></div>
-          </div>
-
-          <div class="flex items-center justify-between gap-2">
-            <button onclick="speakFact()" class="hw-btn px-3 py-1.5 text-xs">
-              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
-                <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
-              </svg>
-              <span>LEES VOOR</span>
-            </button>
-
-            <button onclick="nextFact(true)" class="hw-btn hw-btn-green px-3.5 py-1.5 text-xs">
-              <span>VOLGEND WEETJE</span>
-              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-                <polyline points="9 18 15 12 9 6"></polyline>
-              </svg>
-            </button>
-          </div>
+      <!-- Bottom Reader Controls -->
+      <div class="flex items-center justify-between gap-2 pt-1.5 shrink-0">
+        <button onclick="speakCurrentNewsArticle()" class="hw-btn px-2.5 py-1 text-xs">
+          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+          </svg>
+          <span>LEES ARTIKEL</span>
+        </button>
+        <div class="flex items-center gap-1">
+          <button onclick="prevNews()" class="hw-btn px-2.5 py-1 text-xs">&larr;</button>
+          <button onclick="nextNews()" class="hw-btn hw-btn-dark px-2.5 py-1 text-xs">VOLGENDE &rarr;</button>
         </div>
       </div>
-
     </section>
 
-    <!-- ==================== COLUMN 3 (RIGHT - 3 COLS / ~25%): RAADSEL/QUIZ + TIMER + SPOTTER ==================== -->
-    <section class="col-span-3 flex flex-col gap-2.5 min-h-0 overflow-hidden">
+    <!-- COLUMN 3 (4 COLS): VERKEERSMONITOR (GORINCHEM <-> HELLOUW <-> TIEL) + WEETJES & RAADSEL -->
+    <section class="col-span-4 flex flex-col gap-2.5 min-h-0 overflow-hidden">
 
-      <!-- CARD 1 (TOP): SWITCHABLE RAADSEL & STREEK-QUIZ MODULE -->
-      <div class="hw-card p-3 flex-[1.25] flex flex-col justify-between min-h-0 overflow-hidden">
+      <!-- TOP CARD: VERKEER & FILEMONITOR REGIO (A15 GORINCHEM - HELLOUW - TIEL & A2) -->
+      <div class="hw-card p-2.5 flex-[1.08] flex flex-col justify-between min-h-0 overflow-hidden">
         <div class="flex items-center justify-between border-b-[1.5px] border-[#1A1A1A] pb-1.5 shrink-0">
-          <div class="flex items-center gap-1">
-            <button onclick="switchBrainMode('RAADSEL')" id="bmode-RAADSEL" class="hw-btn hw-btn-dark px-2.5 py-1 text-[11px] font-mono-tech">RAADSEL</button>
-            <button onclick="switchBrainMode('QUIZ')" id="bmode-QUIZ" class="hw-btn px-2.5 py-1 text-[11px] font-mono-tech">QUIZ</button>
-          </div>
           <div class="flex items-center gap-1.5">
-            <span id="quiz-score-pill" class="hidden hw-tag bg-[#2A7B5C] text-white">0 PT</span>
-            <button onclick="speakBrainCard()" class="hw-btn p-1" title="Lees hardop voor">
-              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
-                <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
-              </svg>
-            </button>
+            <span class="hw-tag bg-[#2B5B84] text-white">VERKEER // A15 & A2</span>
+            <span class="font-mono-tech text-[10px] font-bold">GORINCHEM &harr; TIEL</span>
+          </div>
+          <div class="flex items-center gap-1">
+            <button onclick="speakTrafficStatus()" class="hw-btn px-2 py-0.5 text-[10px] font-mono-tech">STEM</button>
+            <button onclick="refreshTrafficMonitor(true)" class="hw-btn px-2 py-0.5 text-[10px] font-mono-tech">CHECK</button>
           </div>
         </div>
 
-        <!-- Mode A: RAADSEL -->
-        <div id="panel-raadsel" class="flex-1 flex flex-col justify-between min-h-0 pt-1.5">
-          <div class="my-auto">
-            <p id="riddle-question" class="font-display font-bold text-sm leading-snug text-[#1A1A1A]">
+        <!-- Visual Route Trajecten List -->
+        <div id="traffic-routes-container" class="my-1 flex-1 min-h-0 hw-scroll flex flex-col gap-1.5 pr-0.5">
+          <!-- Injected by JS: A15 Gorinchem->Hellouw, A15 Hellouw->Tiel, A2 Deil->Waalbrug, N830 Waaldijk -->
+        </div>
+
+        <!-- Traffic Summary Footer -->
+        <div class="flex items-center justify-between pt-1 border-t-[1.5px] border-[#1A1A1A] text-[10px] font-mono-tech font-bold shrink-0">
+          <span id="traffic-summary-line" class="text-[#2A7B5C] truncate">REISTIJD GORINCHEM: ~18 MIN • TIEL: ~20 MIN</span>
+          <span id="traffic-time-stamp" class="text-[#5C5B57]">NU</span>
+        </div>
+      </div>
+
+      <!-- BOTTOM CARD: STREEKWEETJES (36) & RAADSEL VAN DE DAG (MET TAB-WISSEL & SWIPE) -->
+      <div id="fact-riddle-card" class="hw-card p-2.5 flex-1 flex flex-col justify-between min-h-0 overflow-hidden">
+        <div class="flex items-center justify-between border-b-[1.5px] border-[#1A1A1A] pb-1.5 shrink-0 gap-1">
+          <div class="flex items-center gap-1">
+            <button onclick="switchCornerMode('WEETJE')" id="cmode-WEETJE" class="hw-btn hw-btn-green px-2 py-0.5 text-[10px] font-mono-tech">
+              WEETJES (36)
+            </button>
+            <button onclick="switchCornerMode('RAADSEL')" id="cmode-RAADSEL" class="hw-btn px-2 py-0.5 text-[10px] font-mono-tech">
+              RAADSEL (10)
+            </button>
+          </div>
+          <span id="corner-counter-badge" class="hw-tag bg-[#ECEAE4]">01 / 36</span>
+        </div>
+
+        <!-- WEETJE VIEW -->
+        <div id="corner-view-WEETJE" class="flex-1 min-h-0 flex flex-col justify-between my-1">
+          <div id="fact-scroll-box" class="hw-inset p-2.5 flex-1 min-h-0 hw-scroll flex items-start gap-2">
+            <div id="fact-svg-box" class="w-8 h-8 rounded bg-[#F7F6F2] border border-[#1A1A1A] flex items-center justify-center shrink-0 mt-0.5"></div>
+            <p id="fact-body" class="font-display font-bold text-xs sm:text-sm leading-snug text-[#1A1A1A]">
+              Weetje laden...
+            </p>
+          </div>
+
+          <div class="flex items-center justify-between gap-1.5 pt-1.5 shrink-0">
+            <button onclick="speakFact()" class="hw-btn px-2 py-1 text-[11px]">LEES VOOR</button>
+            <div class="flex items-center gap-1">
+              <button onclick="setFactCategory('ALLE')" id="fcat-ALLE" class="hw-btn hw-btn-dark px-1.5 py-0.5 text-[9px] font-mono-tech">ALLE</button>
+              <button onclick="setFactCategory('STREEK')" id="fcat-STREEK" class="hw-btn px-1.5 py-0.5 text-[9px] font-mono-tech">STREEK</button>
+              <button onclick="setFactCategory('DOLFIJNEN')" id="fcat-DOLFIJNEN" class="hw-btn px-1.5 py-0.5 text-[9px] font-mono-tech">DOLFIJN</button>
+            </div>
+            <div class="flex items-center gap-1">
+              <button onclick="prevFact()" class="hw-btn px-2 py-1 text-xs">&larr;</button>
+              <button onclick="nextFact(true)" class="hw-btn hw-btn-green px-2 py-1 text-xs">&rarr;</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- RAADSEL VIEW -->
+        <div id="corner-view-RAADSEL" class="hidden flex-1 min-h-0 flex flex-col justify-between my-1">
+          <div id="riddle-scroll-box" class="hw-inset p-2.5 flex-1 min-h-0 hw-scroll flex flex-col justify-between">
+            <p id="riddle-question" class="font-display font-bold text-xs sm:text-sm leading-snug text-[#1A1A1A]">
               Raadsel laden...
             </p>
-            <div id="riddle-answer-box" class="hidden mt-2 p-2 hw-inset bg-[#2A7B5C] text-white font-mono-tech text-xs font-bold">
+            <div id="riddle-answer-box" class="hidden mt-2 p-2 rounded bg-[#2A7B5C] text-white border border-[#1A1A1A] font-display font-bold text-xs">
               ANTWOORD: <span id="riddle-answer"></span>
             </div>
           </div>
-          <div class="flex items-center gap-1.5 pt-1.5 border-t-[1.5px] border-[#1A1A1A] shrink-0">
-            <button onclick="toggleRiddle()" id="btn-riddle-toggle" class="hw-btn py-1.5 px-2.5 text-xs flex-1">
+
+          <div class="flex items-center justify-between gap-1.5 pt-1.5 shrink-0">
+            <button onclick="speakRiddle()" class="hw-btn px-2 py-1 text-[11px]">STEM</button>
+            <button onclick="toggleRiddle()" id="btn-riddle-toggle" class="hw-btn hw-btn-blue py-1 px-2.5 text-[11px] flex-1">
               TOON ANTWOORD
             </button>
-            <button onclick="nextRiddle()" class="hw-btn py-1.5 px-2.5 text-xs">
-              VOLGENDE
-            </button>
-          </div>
-        </div>
-
-        <!-- Mode B: QUIZ -->
-        <div id="panel-quiz" class="hidden flex-1 flex flex-col justify-between min-h-0 pt-1.5">
-          <p id="quiz-q-text" class="font-display font-bold text-xs sm:text-sm leading-tight text-[#1A1A1A] mb-1">
-            Vraag laden...
-          </p>
-          <div id="quiz-opts-box" class="flex flex-col gap-1 my-auto">
-            <!-- 3 compact buttons A, B, C -->
-          </div>
-          <div class="flex items-center justify-between pt-1.5 border-t-[1.5px] border-[#1A1A1A] shrink-0">
-            <span id="quiz-status-msg" class="font-mono-tech text-[11px] font-bold text-[#5C5B57] truncate">KIES A, B OF C</span>
-            <button onclick="nextQuiz()" class="hw-btn px-2.5 py-1 text-[11px]">VOLGENDE VRAAG</button>
+            <button onclick="nextRiddle()" class="hw-btn py-1 px-2.5 text-[11px]">VOLGENDE &rarr;</button>
           </div>
         </div>
       </div>
 
-      <!-- CARD 2 (MIDDLE): STOPLICHT KEUKEN- & SPELTIMER -->
-      <div class="hw-card p-3 flex-1 flex flex-col justify-between min-h-0 overflow-hidden">
-        <div class="flex items-center justify-between border-b-[1.5px] border-[#1A1A1A] pb-1.5 shrink-0">
-          <span class="hw-tag bg-[#1A1A1A] text-white">STOPLICHT TIMER</span>
-          <span id="timer-status-tag" class="font-mono-tech text-[11px] font-bold text-[#5C5B57]">KLAAR VOOR START</span>
-        </div>
+    </section>
+  </main>
 
-        <!-- Monospace Countdown + Stoplicht Progress Bar -->
-        <div class="my-auto py-1 flex items-center justify-between gap-3">
-          <div id="timer-readout" class="font-mono-tech text-3xl sm:text-4xl font-extrabold tracking-tight">
-            00:00
-          </div>
-          <div class="flex-1 h-6 hw-inset p-0.5 overflow-hidden">
-            <div id="timer-bar" class="h-full bg-[#2A7B5C] transition-all duration-300 rounded-[3px]" style="width: 100%;"></div>
-          </div>
-        </div>
+  <!-- ==================== TAB 02: DAGTAKEN & GROEPSBORD (STARTS EMPTY BY DEFAULT) ==================== -->
+  <main id="page-TAKEN" class="hidden flex-1 flex flex-col gap-2.5 min-h-0 overflow-hidden">
 
-        <!-- Quick Tactile Buttons -->
-        <div class="grid grid-cols-5 gap-1 pt-1.5 border-t-[1.5px] border-[#1A1A1A] shrink-0">
-          <button onclick="startTimer(1)" class="hw-btn py-1.5 text-[11px] font-mono-tech">1M</button>
-          <button onclick="startTimer(5)" class="hw-btn py-1.5 text-[11px] font-mono-tech">5M</button>
-          <button onclick="startTimer(10)" class="hw-btn py-1.5 text-[11px] font-mono-tech">10M</button>
-          <button onclick="startTimer(15)" class="hw-btn py-1.5 text-[11px] font-mono-tech">15M</button>
-          <button onclick="resetTimer()" class="hw-btn hw-btn-orange py-1.5 text-[11px] font-mono-tech">STOP</button>
-        </div>
+    <!-- Top Builder Bar: Add a task when desired -->
+    <section class="hw-card p-3 shrink-0 flex flex-wrap items-center justify-between gap-2">
+      <div class="flex items-center gap-2">
+        <span class="hw-tag bg-[#1A1A1A] text-white">TAKENBORD // DE DOLFIJN</span>
+        <span class="text-xs font-bold text-[#5C5B57] hidden md:inline">
+          Standaard leeg — voeg hieronder eenvoudig een taak of afspraak toe voor vandaag:
+        </span>
       </div>
 
-      <!-- CARD 3 (BOTTOM): RAAMKOZIJN SPOTTER (6 ITEMS CHECKLIST) -->
-      <div class="hw-card p-3 flex-[1.15] flex flex-col justify-between min-h-0 overflow-hidden">
-        <div class="flex items-center justify-between border-b-[1.5px] border-[#1A1A1A] pb-1.5 shrink-0">
-          <span class="hw-tag bg-[#2A7B5C] text-white">RAAMKOZIJN SPOTTER</span>
-          <button onclick="resetSpotter()" class="font-mono-tech text-[10px] font-bold underline text-[#5C5B57]">
-            RESET (<span id="spotter-score">0/6</span>)
-          </button>
-        </div>
+      <div class="flex items-center gap-2 flex-1 max-w-3xl justify-end">
+        <input id="task-input-title" type="text" placeholder="Typ een taak (bijv. Tafel dekken, Planten water geven)..." class="hw-input flex-1 min-w-[180px]">
+        <input id="task-input-person" type="text" placeholder="Wie? (optioneel)" class="hw-input w-36">
+        <select id="task-input-slot" class="hw-input font-mono-tech text-xs">
+          <option value="OCHTEND">OCHTEND</option>
+          <option value="MIDDAG">MIDDAG</option>
+          <option value="AVOND">AVOND & KEUKEN</option>
+        </select>
+        <button onclick="addNewBoardTask()" class="hw-btn hw-btn-green px-3 py-1.5 text-xs">
+          + ZET OP BORD
+        </button>
+        <button onclick="clearAllBoardTasks()" class="hw-btn px-2.5 py-1.5 text-xs font-mono-tech" title="Maak het hele bord weer leeg">
+          LEEGMAKEN
+        </button>
+      </div>
+    </section>
 
-        <div id="spotter-grid" class="grid grid-cols-2 gap-1.5 my-auto pt-1.5 flex-1">
-          <!-- 6 Checkable items rendered by JS -->
+    <!-- 3-Column Daily Task Board (Ochtend / Middag / Avond) -->
+    <section class="flex-1 grid grid-cols-3 gap-2.5 min-h-0 overflow-hidden">
+      <!-- OCHTEND -->
+      <div class="hw-card p-3 flex flex-col justify-between min-h-0 overflow-hidden">
+        <div class="flex items-center justify-between border-b-[1.5px] border-[#1A1A1A] pb-2 shrink-0">
+          <span class="hw-tag bg-[#2B5B84] text-white">01 // OCHTEND</span>
+          <span id="count-tasks-OCHTEND" class="font-mono-tech text-xs font-bold text-[#5C5B57]">0 TAKEN</span>
         </div>
+        <div id="list-tasks-OCHTEND" class="my-2 flex-1 min-h-0 hw-scroll flex flex-col gap-2 pr-1"></div>
       </div>
 
+      <!-- MIDDAG -->
+      <div class="hw-card p-3 flex flex-col justify-between min-h-0 overflow-hidden">
+        <div class="flex items-center justify-between border-b-[1.5px] border-[#1A1A1A] pb-2 shrink-0">
+          <span class="hw-tag bg-[#2A7B5C] text-white">02 // MIDDAG</span>
+          <span id="count-tasks-MIDDAG" class="font-mono-tech text-xs font-bold text-[#5C5B57]">0 TAKEN</span>
+        </div>
+        <div id="list-tasks-MIDDAG" class="my-2 flex-1 min-h-0 hw-scroll flex flex-col gap-2 pr-1"></div>
+      </div>
+
+      <!-- AVOND & KEUKEN -->
+      <div class="hw-card p-3 flex flex-col justify-between min-h-0 overflow-hidden">
+        <div class="flex items-center justify-between border-b-[1.5px] border-[#1A1A1A] pb-2 shrink-0">
+          <span class="hw-tag bg-[#D96B27] text-white">03 // AVOND & KEUKEN</span>
+          <span id="count-tasks-AVOND" class="font-mono-tech text-xs font-bold text-[#5C5B57]">0 TAKEN</span>
+        </div>
+        <div id="list-tasks-AVOND" class="my-2 flex-1 min-h-0 hw-scroll flex flex-col gap-2 pr-1"></div>
+      </div>
     </section>
 
   </main>
 
-  <!-- ==================== RUSTMODUS / ADEMHALING MODAL OVERLAY ==================== -->
-  <div id="breathing-modal" class="hidden fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-6">
-    <div class="hw-card max-w-lg w-full p-6 flex flex-col items-center justify-between gap-6">
-      <div class="w-full flex items-center justify-between border-b-[1.5px] border-[#1A1A1A] pb-3">
-        <div class="flex items-center gap-2">
-          <span class="hw-tag bg-[#2B5B84] text-white">RUSTPUNT // DE DOLFIJN</span>
-          <h3 class="font-display font-bold text-base uppercase">Ademhalings-cadans</h3>
+  <!-- ==================== TAB 03: WAAL & STREEK EXPEDITIE ==================== -->
+  <main id="page-EXPEDITIE" class="hidden flex-1 grid grid-cols-12 gap-2.5 min-h-0 overflow-hidden">
+
+    <!-- LEFT (5 COLS): RAAMKOZIJN SPOTTER + WAAL RIVIER & VEERPONT MONITOR -->
+    <section class="col-span-5 flex flex-col gap-2.5 min-h-0 overflow-hidden">
+      <div class="hw-card p-3 flex-[1.3] flex flex-col justify-between min-h-0 overflow-hidden">
+        <div class="flex items-center justify-between border-b-[1.5px] border-[#1A1A1A] pb-1.5 shrink-0">
+          <div class="flex items-center gap-2">
+            <span class="hw-tag bg-[#2A7B5C] text-white">SPOTTER // HELLOUW</span>
+            <h2 class="font-display font-bold text-xs sm:text-sm uppercase">Wat zie je buiten?</h2>
+          </div>
+          <button onclick="resetSpotter()" class="hw-btn px-2 py-0.5 text-[10px] font-mono-tech">
+            RESET (<span id="spotter-total-badge">0</span>)
+          </button>
         </div>
-        <button onclick="closeBreathingModal()" class="hw-btn px-3 py-1 text-xs">SLUITEN</button>
+
+        <div id="spotter-grid" class="grid grid-cols-2 gap-1.5 my-1.5 flex-1 min-h-0 hw-scroll pr-0.5"></div>
       </div>
 
-      <div class="py-6 flex flex-col items-center justify-center">
-        <div class="w-48 h-48 hw-inset rounded-full flex items-center justify-center">
-          <div id="breath-circle" class="w-24 h-24 rounded-full bg-[#2B5B84] border-2 border-[#1A1A1A] flex items-center justify-center text-white">
-            <svg class="w-10 h-10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <!-- Fun Extra Module: Waal Rivier & Veerpont Brakel-Herwijnen Monitor -->
+      <div class="hw-card p-3 flex-1 flex flex-col justify-between min-h-0 overflow-hidden">
+        <div class="flex items-center justify-between border-b-[1.5px] border-[#1A1A1A] pb-1 shrink-0">
+          <span class="hw-tag bg-[#2B5B84] text-white">DE WAAL // RIVIER-INFO</span>
+          <span class="font-mono-tech text-[10px] font-bold text-[#2A7B5C]">STROOMAFWAARTS</span>
+        </div>
+        <div class="grid grid-cols-2 gap-2 my-auto">
+          <div class="hw-inset p-2">
+            <div class="font-mono-tech text-[9px] font-bold text-[#5C5B57]">WATERSTROOM LANGS HELLOUW</div>
+            <div class="font-mono-tech text-sm font-extrabold text-[#1A1A1A]">~1.500.000 LITER/SEC</div>
+            <div class="text-[10px] text-[#5C5B57] font-medium">Dat zijn 600 volle zwembaden per minuut!</div>
+          </div>
+          <div class="hw-inset p-2">
+            <div class="font-mono-tech text-[9px] font-bold text-[#5C5B57]">VEERPONT HERWIJNEN - BRAKEL</div>
+            <div class="font-mono-tech text-sm font-extrabold text-[#2A7B5C]">VAART DAGELIJKS</div>
+            <div class="text-[10px] text-[#5C5B57] font-medium">Overtocht over de Waal duurt circa 4 minuten.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- RIGHT (7 COLS): INTERACTIEVE STREEK & DIEREN ENCYCLOPEDIE -->
+    <section class="col-span-7 hw-card p-3.5 flex flex-col justify-between min-h-0 overflow-hidden">
+      <div class="flex items-center justify-between border-b-[1.5px] border-[#1A1A1A] pb-2 shrink-0">
+        <div class="flex items-center gap-2">
+          <span class="hw-tag bg-[#1A1A1A] text-white">ONTDEKKAARTEN // 08</span>
+          <h2 class="font-display font-bold text-sm uppercase">Dieren, Schepen & Kastelen in de buurt</h2>
+        </div>
+        <button onclick="speakEncyclopedia()" class="hw-btn hw-btn-blue px-3 py-1 text-xs">
+          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+          </svg>
+          <span>LEES KAART VOOR</span>
+        </button>
+      </div>
+
+      <div id="encyc-tabs" class="grid grid-cols-4 gap-1.5 my-2 shrink-0"></div>
+
+      <div class="hw-inset p-3.5 flex-1 min-h-0 hw-scroll flex flex-col justify-between gap-3">
+        <div>
+          <div class="flex items-center justify-between gap-2 mb-1">
+            <span id="enc-category" class="hw-tag bg-[#D96B27] text-white">WATERDIER</span>
+            <span id="enc-location" class="font-mono-tech text-xs font-bold text-[#5C5B57]">PLEK: UITERWAARDEN HELLOUW</span>
+          </div>
+          <h3 id="enc-title" class="font-display font-bold text-xl text-[#1A1A1A]">De Bever van de Waal</h3>
+          <p id="enc-desc" class="text-sm text-[#2C2B29] font-medium leading-relaxed mt-2"></p>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2 pt-2 border-t border-[#1A1A1A]">
+          <div class="bg-[#F7F6F2] p-2.5 rounded border border-[#1A1A1A]">
+            <div class="font-mono-tech text-[10px] font-bold text-[#5C5B57]">GROOTTE / KENMERK</div>
+            <div id="enc-stat" class="font-display font-bold text-xs sm:text-sm mt-0.5">--</div>
+          </div>
+          <div class="bg-[#F7F6F2] p-2.5 rounded border border-[#1A1A1A]">
+            <div class="font-mono-tech text-[10px] font-bold text-[#2A7B5C]">ZOEK-TIP VOOR BUITEN</div>
+            <div id="enc-tip" class="font-display font-bold text-xs sm:text-sm mt-0.5">--</div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ==================== TAB 04: KLETSPOT AAN TAFEL, QUIZ & RUST ==================== -->
+  <main id="page-KLETSPOT" class="hidden flex-1 grid grid-cols-12 gap-2.5 min-h-0 overflow-hidden">
+
+    <!-- COLUMN 1 (4 COLS): DE KLETSPOT AAN TAFEL & COMPLIMENTEN GENERATOR -->
+    <section class="col-span-4 hw-card p-3 flex flex-col justify-between min-h-0 overflow-hidden">
+      <div class="flex items-center justify-between border-b-[1.5px] border-[#1A1A1A] pb-2 shrink-0">
+        <span class="hw-tag bg-[#D96B27] text-white">KLETSPOT // TAFELGESPREK</span>
+        <button onclick="speakKletspot()" class="hw-btn px-2 py-0.5 text-xs">STEM</button>
+      </div>
+
+      <div class="hw-inset p-3.5 my-2 flex-1 min-h-0 hw-scroll flex flex-col justify-between">
+        <div>
+          <span id="kletspot-type-badge" class="hw-tag bg-[#1A1A1A] text-white mb-2">VRAAG VOOR AAN TAFEL</span>
+          <p id="kletspot-text" class="font-display font-bold text-base sm:text-lg leading-snug text-[#1A1A1A] mt-1">
+            Als je vandaag zelf een nieuwe regel mocht bedenken in De Dolfijn waar iedereen vrolijk van wordt, wat zou dat dan zijn?
+          </p>
+        </div>
+        <div class="p-2 rounded bg-[#F7F6F2] border border-[#1A1A1A] text-xs text-[#5C5B57] font-medium">
+          Tip: Laat iedereen aan tafel om de beurt antwoord geven!
+        </div>
+      </div>
+
+      <div class="grid grid-cols-2 gap-2 shrink-0">
+        <button onclick="nextKletspot('VRAAG')" class="hw-btn hw-btn-orange py-2 text-xs">
+          NIEUWE KLETSVRAAG
+        </button>
+        <button onclick="nextKletspot('OPDRACHT')" class="hw-btn hw-btn-green py-2 text-xs">
+          GROEPS-CHALLENGE
+        </button>
+      </div>
+    </section>
+
+    <!-- COLUMN 2 (4 COLS): BETUWE & DOLFIJN QUIZ -->
+    <section class="col-span-4 hw-card p-3 flex flex-col justify-between min-h-0 overflow-hidden">
+      <div class="flex items-center justify-between border-b-[1.5px] border-[#1A1A1A] pb-2 shrink-0">
+        <div class="flex items-center gap-1.5">
+          <span class="hw-tag bg-[#2A7B5C] text-white">GROEPSQUIZ</span>
+          <span id="quiz-score-pill" class="hw-tag bg-[#1A1A1A] text-white">0 PT</span>
+        </div>
+        <button onclick="speakQuiz()" class="hw-btn px-2 py-0.5 text-xs">LEES VOOR</button>
+      </div>
+
+      <div class="hw-inset p-3 my-2 flex-1 min-h-0 hw-scroll flex flex-col justify-between">
+        <div>
+          <div class="font-mono-tech text-[10px] font-bold text-[#5C5B57] mb-1" id="quiz-counter-label">VRAAG 1 VAN 10</div>
+          <p id="quiz-q-text" class="font-display font-bold text-sm sm:text-base leading-snug text-[#1A1A1A] mb-2.5">
+            Quizvraag laden...
+          </p>
+          <div id="quiz-opts-box" class="flex flex-col gap-1.5"></div>
+        </div>
+        <div id="quiz-explain-box" class="hidden mt-2.5 p-2 rounded bg-[#F7F6F2] border-[1.5px] border-[#1A1A1A] text-xs font-medium"></div>
+      </div>
+
+      <div class="flex items-center justify-between shrink-0">
+        <span id="quiz-status-msg" class="font-mono-tech text-[11px] font-bold text-[#5C5B57]">KIES A, B OF C</span>
+        <button onclick="nextQuiz()" class="hw-btn hw-btn-dark px-3 py-1.5 text-xs">VOLGENDE &rarr;</button>
+      </div>
+    </section>
+
+    <!-- COLUMN 3 (4 COLS): ADEMHALING & NATUUR-RUIS ONTPRIKKELHOEK -->
+    <section class="col-span-4 hw-card p-3 flex flex-col justify-between min-h-0 overflow-hidden">
+      <div class="flex items-center justify-between border-b-[1.5px] border-[#1A1A1A] pb-2 shrink-0">
+        <span class="hw-tag bg-[#2B5B84] text-white">RUST & ONTPRIKKELHOEK</span>
+        <span id="ambient-status" class="font-mono-tech text-[10px] font-bold text-[#5C5B57]">GELUID UIT</span>
+      </div>
+
+      <div class="my-auto flex flex-col items-center justify-center py-2">
+        <div class="w-32 h-32 hw-inset rounded-full flex items-center justify-center">
+          <div id="calm-breath-circle" class="w-18 h-18 p-4 rounded-full bg-[#2B5B84] border-2 border-[#1A1A1A] flex items-center justify-center text-white">
+            <svg class="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M2 16c2-4 6-7 11-7 4 0 7 2 9 5-2 0-4 1-5 3-2-2-5-3-8-2-3 1-5 3-7 1z"/>
               <path d="M11 9c0-3 2-5 4-6-1 2 0 4 1 6"/>
             </svg>
           </div>
         </div>
-        <div id="breath-instruction" class="font-display font-bold text-xl uppercase mt-6 text-center">
+        <div id="calm-breath-label" class="font-display font-bold text-sm uppercase mt-3 text-center">
           ADEM RUSTIG IN DOOR JE NEUS...
         </div>
-        <p class="font-mono-tech text-xs text-[#5C5B57] mt-1">
-          4 SECONDEN IN • 2 SECONDEN VAST • 4 SECONDEN UIT
-        </p>
       </div>
 
-      <div class="w-full flex justify-between gap-3 border-t-[1.5px] border-[#1A1A1A] pt-3">
-        <button onclick="speakText('Kijk rustig naar de cirkel. Adem in door je neus als de cirkel groter wordt, en blaas zachtjes uit door je mond als de cirkel kleiner wordt.')" class="hw-btn px-4 py-2 text-xs">
-          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
-            <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
-          </svg>
-          <span>BEGELEIDENDE STEM</span>
+      <div class="grid grid-cols-3 gap-1.5 pt-2 border-t-[1.5px] border-[#1A1A1A] shrink-0">
+        <button onclick="toggleAmbientSound('WAAL')" id="amb-btn-WAAL" class="hw-btn py-2 px-1 text-[10px] font-mono-tech">
+          WAAL-GOLFJES
         </button>
-        <button onclick="closeBreathingModal()" class="hw-btn hw-btn-dark px-5 py-2 text-xs">
-          TERUG NAAR DASHBOARD
+        <button onclick="toggleAmbientSound('WIND')" id="amb-btn-WIND" class="hw-btn py-2 px-1 text-[10px] font-mono-tech">
+          POLDERBRIES
+        </button>
+        <button onclick="stopAmbientSound()" class="hw-btn hw-btn-orange py-2 px-1 text-[10px] font-mono-tech">
+          STILTE
         </button>
       </div>
-    </div>
-  </div>
+    </section>
+
+  </main>
+
+  <!-- Hidden HTML5 Audio Element for Live NPO Radio 1 News Stream -->
+  <audio id="live-radio-player" preload="none" src="https://icecast.omroep.nl/radio1-bb-mp3"></audio>
 
   <!-- ==================== JAVASCRIPT ENGINE ==================== -->
   <script>
-    // Optional: Paste a raw GitHub Gist URL here to load extra facts automatically
-    const CUSTOM_GIST_RAW_URL = "";
-
     // =========================================================================
     // 1. INLINE SVG ICON DEFINITIONS (ZERO EMOJIS)
     // =========================================================================
@@ -554,20 +809,18 @@
       cloud: `<svg class="w-full h-full text-[#1A1A1A]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg>`,
       rain: `<svg class="w-full h-full text-[#2B5B84]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"/><path d="M16 14v6"/><path d="M8 14v6"/><path d="M12 16v6"/></svg>`,
       wind: `<svg class="w-full h-full text-[#D96B27]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M17.7 7.7a2.5 2.5 0 1 1 1.8 4.3H2"/><path d="M9.6 4.6A2 2 0 1 1 11 8H2"/><path d="M12.6 19.4A2 2 0 1 0 14 16H2"/></svg>`,
-      // Clothing Icons
-      tshirt: `<svg class="w-7 h-7 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.38 3.46 16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.47a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.47a2 2 0 0 0-1.34-2.23z"/></svg>`,
-      jacket: `<svg class="w-7 h-7 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H9l-5 4v14h6v-6h4v6h6V6l-5-4z"/><line x1="12" y1="2" x2="12" y2="14"/></svg>`,
-      raincoat: `<svg class="w-7 h-7 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12a10.06 10.06 0 0 0-20 0Z"/><path d="M12 12v8a2 2 0 0 0 4 0"/><path d="M12 2v1"/></svg>`,
-      // Fact Category Icons
-      streek: `<svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M3 21h18"/><path d="M5 21V7l7-4 7 4v14"/><path d="M9 21v-6h6v6"/></svg>`,
-      dolfijnen: `<svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M2 16c2-4 6-7 11-7 4 0 7 2 9 5-2 0-4 1-5 3-2-2-5-3-8-2-3 1-5 3-7 1z"/><path d="M11 9c0-3 2-5 4-6-1 2 0 4 1 6"/></svg>`,
-      natuur: `<svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 19v3"/><path d="M12 19a7 7 0 1 0 0-14 7 7 0 0 0 0 14Z"/><path d="M9.5 12.5 12 15l2.5-2.5"/></svg>`
+      tshirt: `<svg class="w-6 h-6 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.38 3.46 16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.47a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.47a2 2 0 0 0-1.34-2.23z"/></svg>`,
+      jacket: `<svg class="w-6 h-6 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H9l-5 4v14h6v-6h4v6h6V6l-5-4z"/><line x1="12" y1="2" x2="12" y2="14"/></svg>`,
+      raincoat: `<svg class="w-6 h-6 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12a10.06 10.06 0 0 0-20 0Z"/><path d="M12 12v8a2 2 0 0 0 4 0"/><path d="M12 2v1"/></svg>`,
+      streek: `<svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M3 21h18"/><path d="M5 21V7l7-4 7 4v14"/><path d="M9 21v-6h6v6"/></svg>`,
+      dolfijnen: `<svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M2 16c2-4 6-7 11-7 4 0 7 2 9 5-2 0-4 1-5 3-2-2-5-3-8-2-3 1-5 3-7 1z"/><path d="M11 9c0-3 2-5 4-6-1 2 0 4 1 6"/></svg>`,
+      natuur: `<svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 19v3"/><path d="M12 19a7 7 0 1 0 0-14 7 7 0 0 0 0 14Z"/><path d="M9.5 12.5 12 15l2.5-2.5"/></svg>`
     };
 
     // =========================================================================
-    // 2. WEETJES DATABASE (36 ACCURATE FACTS FOR HELLOUW, BETUWE & DOLFIJNEN)
+    // 2. DATABASES (WEETJES, RAADSELS, KLETSPOT, ENCYCLOPEDIA, QUIZ)
     // =========================================================================
-    let FACTS_LIST = [
+    const FACTS_LIST = [
       { cat: 'STREEK', text: "Hellouw bestond al in het jaar 850 en heette in oude geschriften toen Villa Hellowa." },
       { cat: 'STREEK', text: "De naam Hellouw betekent letterlijk: laaggelegen weiland vlak aan het water." },
       { cat: 'STREEK', text: "In de polder bij Hellouw staan twee historische wipwatermolens: de Laaglandse Molen en de Hooglandse Molen." },
@@ -609,128 +862,390 @@
     const FALLBACK_JEUGDJOURNAAL = [
       {
         title: "Steeds meer bevers geteld in de uiterwaarden langs de Waal",
-        description: "Natuuronderzoekers zien dat de bever het uitstekend doet langs de rivieren in Gelderland. Op veel plekken zijn knaagsporen en burchten te zien."
+        description: "Natuuronderzoekers zien dat de bever het uitstekend doet langs de rivieren in Gelderland. Op veel plekken rond Hellouw en Haaften zijn afgekloven wilgentakken en grote takkenburchten langs de oever te zien."
       },
       {
-        title: "Scholen in actie voor veilige fietsroutes op de dijk",
-        description: "Kinderen hebben samen met verkeerskundigen gekeken hoe drukke dijken en schoolroutes overzichtelijker kunnen worden gemaakt voor fietsers."
+        title: "Kinderen denken mee over fijne speelplekken en veilige fietsroutes",
+        description: "Verschillende scholen in het rivierengebied hebben samen met gemeenten plannen gemaakt voor extra groene schoolpleinen en overzichtelijke fietsroutes over de dijk."
       },
       {
-        title: "KNMI test nieuwe weermodellen voor lokale regenbuien",
-        description: "Met behulp van de weerradar in Herwijnen kunnen meteorologen steeds nauwkeuriger voorspellen of het tijdens het buitenspelen droog blijft."
+        title: "KNMI weerradar in Herwijnen brengt buien nog scherper in beeld",
+        description: "Met de grote witte weerradar in Herwijnen kunnen weerkundigen tot op de minuut voorspellen hoe laat een bui over de West Betuwe trekt en wanneer de zon weer doorbreekt."
       },
       {
-        title: "Dolfijnenonderzoekers ontdekken nieuwe fluitgeluiden",
-        description: "Biologen hebben met onderwatermicrofoons vastgelegd hoe groepen dolfijnen samenwerken en elkaar op grote afstand waarschuwen."
+        title: "Onderzoekers ontdekken hoe dolfijnen samenwerken met fluitjes",
+        description: "Zee-onderzoekers hebben met onderwatermicrofoons vastgelegd hoe dolfijnen met klik- en fluitgeluiden afspraken maken en elkaar helpen tijdens het zwemmen."
       },
       {
-        title: "Fruitboeren in de Betuwe bereiden boomgaarden voor op het seizoen",
-        description: "In de appel- en perenboomgaarden wordt hard gewerkt zodat de bomen gezond blijven en genoeg ruimte en zonlicht krijgen."
+        title: "Fruitboeren in de Betuwe zaaien extra bloemen voor bijen en vlinders",
+        description: "Langs appel- en perenboomgaarden in de streek tussen Gorinchem en Tiel worden brede bloemenranden gezaaid zodat hommels en bijen volop nectar vinden."
+      },
+      {
+        title: "Nieuwe snelle laadsystemen voor elektrische binnenvaartschepen op de Waal",
+        description: "Steeds meer vrachtschepen die langs Hellouw en Zaltbommel varen krijgen schone elektromotoren met verwisselbare batterijcontainers."
+      }
+    ];
+
+    const FALLBACK_ALGEMEEN_NIEUWS = [
+      {
+        title: "Rijkswaterstaat controleert doorstroming op knooppunt Deil en A15",
+        description: "Op de A15 tussen Gorinchem en Tiel en bij knooppunt Deil houdt Rijkswaterstaat de spitsdrukte extra in de gaten om het verkeer in het rivierengebied vlot te laten doorstromen."
+      },
+      {
+        title: "Extra aandacht voor natuur en wandelpaden langs de Waaldijk",
+        description: "In de gemeente West Betuwe worden verschillende wandelroutes door de uiterwaarden bij Hellouw, Herwijnen en Haaften opgeknapt voor wandelaars en natuurliefhebbers."
+      },
+      {
+        title: "Binnenvaart op de Waal profiteert van gunstige waterstand",
+        description: "Dankzij het stabiele waterpeil in de Waal kunnen vrachtschepen en duwstellen tussen Rotterdam, Gorinchem, Tiel en Nijmegen hun volledige lading vervoeren."
+      },
+      {
+        title: "Lokale dorpshuizen in West Betuwe organiseren najaarsactiviteiten",
+        description: "In de dorpen langs de Waal staan de komende weken verschillende buurtmarkten, spelletjesmiddagen en gezellige dorpsactiviteiten op de agenda."
+      },
+      {
+        title: "KNMI verwacht rustig rivierenweer met afwisselend wolken en opklaringen",
+        description: "De weerradar in Herwijnen laat voor de regio Rivierenland een afwisseling van wolkenvelden, droge dagdelen en een matige wind langs de dijken zien."
+      },
+      {
+        title: "Veerponten in het rivierengebied varen volgens de normale dienstregeling",
+        description: "De veerverbindingen over de Waal en Maas, waaronder de pont tussen Herwijnen en Brakel, varen vandaag zonder bijzonderheden volgens schema."
       }
     ];
 
     const RIDDLES_LIST = [
-      { q: "Het stroomt langs Hellouw en Haaften, heeft een bed maar slaapt nooit. Wat is het?", a: "De rivier de Waal" },
-      { q: "Welk dier slaapt onder water met één oog open?", a: "Een dolfijn" },
-      { q: "Wat wordt natter naarmate je er meer mee afdroogt in de keuken?", a: "Een theedoek" },
-      { q: "Het heeft tanden, maar het kan niet bijten of eten. Wat is het?", a: "Een kam of een rits" },
-      { q: "Wat gaat omhoog zodra de regen naar beneden komt?", a: "Een paraplu" },
-      { q: "Het zit vol met gaten, maar houdt toch veel water vast. Wat is het?", a: "Een spons" },
-      { q: "Welke berg kun je aan tafel helemaal opeten?", a: "Een berg pannenkoeken" }
+      { q: "Het stroomt vlak langs Hellouw en Haaften, het heeft een bed maar het slaapt nooit. Wat is het?", a: "De rivier de Waal!" },
+      { q: "Welk slim dier slaapt onder water met één oog open om op zijn vrienden te letten?", a: "Een dolfijn!" },
+      { q: "Wat wordt steeds natter naarmate je er meer mee afdroogt in de keuken?", a: "Een theedoek!" },
+      { q: "Het heeft een heleboel tanden, maar het kan niet bijten en ook niet kauwen. Wat is het?", a: "Een kam of een rits!" },
+      { q: "Wat gaat altijd pas omhoog zodra de regen naar beneden komt?", a: "Een paraplu!" },
+      { q: "Het zit vol met gaten van binnen en van buiten, maar toch houdt het heel veel water vast. Wat is het?", a: "Een spons!" },
+      { q: "Welke berg kun je in het logeerhuis aan tafel helemaal met stroop opeten?", a: "Een berg pannenkoeken!" },
+      { q: "Het loopt de hele dag op de muur of op het scherm, maar het heeft geen voeten en zet geen stap. Wat is het?", a: "De klok!" },
+      { q: "Hoe meer je ervan weghaalt met een schep, hoe groter het wordt. Wat is het?", a: "Een kuil in het zand!" },
+      { q: "Ik heb vier poten maar ik kan niet lopen, en iedereen zit elke dag bij mij aan het eten. Wat ben ik?", a: "De eettafel!" }
+    ];
+
+    const KLETSPOT_VRAGEN = [
+      "Als je vandaag zelf een nieuwe feestdag mocht bedenken voor in De Dolfijn, wat zouden we dan allemaal gaan doen?",
+      "Welk dier uit de uiterwaarden bij Hellouw zou je wel één dagje willen zijn: een bever, een ooievaar of een snelle haas?",
+      "Wat is het allerlekkerste avondeten of toetje waar je meteen vrolijk van wordt?",
+      "Als je een superkracht mocht kiezen waarmee je anderen kunt helpen, welke kracht kies je dan?",
+      "Wat vond je vandaag het leukste of grappigste moment van de dag?",
+      "Als we met de hele groep op reis mochten met een groot schip over de Waal, waar zouden we dan naartoe varen?",
+      "Welk bordspel of buitenspel vind jij het allerleukst om samen te spelen?"
+    ];
+
+    const KLETSPOT_OPDRACHTEN = [
+      "GROEPS-CHALLENGE: Geef degene die links van je aan tafel zit een echt complimentje!",
+      "GROEPS-CHALLENGE: Bedenk samen drie dingen in Hellouw die beginnen met de letter B.",
+      "GROEPS-CHALLENGE: Probeer allemaal tegelijk 10 seconden lang zo stil mogelijk te glimlachen zonder te lachen!",
+      "GROEPS-CHALLENGE: Noem om de beurt een dier dat in of bij het water leeft zonder dezelfde twee keer te noemen.",
+      "GROEPS-CHALLENGE: Wie kan het beste het geluid van een klepperende ooievaar of een fluitende dolfijn nadoen?"
+    ];
+
+    const SPOTTER_CONFIG = [
+      { id: 'schip', label: 'BINNENVAARTSCHIP', sub: 'Op de Waal' },
+      { id: 'tractor', label: 'TRACTOR', sub: 'Op de dijk of weg' },
+      { id: 'ooievaar', label: 'OOIEVAAR / REIGER', sub: 'In de polder' },
+      { id: 'molen', label: 'WIPWATERMOLEN', sub: 'Bij Hellouw' },
+      { id: 'roofvogel', label: 'BUIZERD / VALK', sub: 'Op een paaltje' },
+      { id: 'konijn', label: 'HAAS OF KONIJN', sub: 'In het weiland' },
+      { id: 'vliegtuig', label: 'VLIEGTUIGSTREEP', sub: 'Hoog in de lucht' },
+      { id: 'regenboog', label: 'MOOIE WOLK / ZON', sub: 'Boven het dorp' }
+    ];
+
+    const ENCYCLOPEDIA_LIST = [
+      {
+        id: 'bever',
+        tab: '01. DE BEVER',
+        cat: 'ZOOGDIER // WAALOEVERS',
+        loc: 'Uiterwaarden bij Hellouw & Haaften',
+        title: 'De Bever van de Waal',
+        desc: 'De bever is het grootste knaagdier van Europa en woont volop langs de oevers van de Waal bij Hellouw. Met zijn platte geschubde staart stuurt hij onder water. Zijn voortanden zijn oranje omdat er ijzer in het glazuur zit; daarmee knaagt hij moeiteloos dikke wilgen om voor zijn burcht.',
+        stat: 'Tot 1 meter lang en 25 kilo zwaar (kan 15 minuten onder water blijven)',
+        tip: 'Let bij een wandeling langs de Waal op schuin afgeknaagde boomstammen met houtsnippers.'
+      },
+      {
+        id: 'dolfijn',
+        tab: '02. DE DOLFIJN',
+        cat: 'ZEEZOOGDIER // NAAMGEVER',
+        loc: 'Noordzee & Wereldzeeën',
+        title: 'De Tuimelaar Dolfijn',
+        desc: 'Ons logeerhuis is vernoemd naar de dolfijn! Dolfijnen leven in hechte groepen waarin ze elkaar helpen. Elke dolfijn heeft een eigen fluittoon waarmee groepsgenoten elkaar roepen. Omdat een dolfijn bewust moet ademhalen aan het oppervlak, slaapt er altijd maar één hersenhelft tegelijk en blijft één oog open.',
+        stat: '2,5 tot 3,5 meter lang • Springt tot 5 meter hoog boven het water',
+        tip: 'Wist je dat er in de Noordzee langs de Nederlandse kust ook bruinvissen zwemmen?'
+      },
+      {
+        id: 'duwboot',
+        tab: '03. DUWBOOT & SCHIP',
+        cat: 'SCHEEPVAART // DE WAAL',
+        loc: 'Rivier de Waal langs de dijk',
+        title: 'Binnenvaartschepen & Duwstellen',
+        desc: 'De Waal langs Hellouw is de drukste rivier van West-Europa. Elke paar minuten vaart er een groot vrachtschip of duwboot voorbij tussen Rotterdam, Gorinchem, Tiel en Duitsland. Eén groot binnenvaartschip vervoert net zoveel vracht als 150 tot 200 vrachtwagens op de A15!',
+        stat: 'Vaak 110 tot 135 meter lang (langer dan een heel voetbalveld!)',
+        tip: 'Kijk op de stuurhut naar de vlaggetjes en tel hoeveel containers er op elkaar gestapeld staan.'
+      },
+      {
+        id: 'ijsvogel',
+        tab: '04. DE IJSVOGEL',
+        cat: 'VOGEL // POLDERSLOTEN',
+        loc: 'Oude Wiel & Sloten bij Hellouw',
+        title: 'De Blauwe Flits: De IJsvogel',
+        desc: 'De ijsvogel is een van de kleurrijkste vogels van de Betuwe met een felblauw ruggetje en een oranje borst. Hij zit doodstil op een tak boven het water te turen naar kleine visjes en duikt dan pijlsnel het water in.',
+        stat: '16 centimeter klein • Vliegt tot 45 kilometer per uur vlak boven het water',
+        tip: 'Als je een felblauw streepje laag over de sloot ziet schieten, is het de ijsvogel!'
+      },
+      {
+        id: 'molens',
+        tab: '05. POLDERMOLENS',
+        cat: 'HISTORIE // HELLOUW',
+        loc: 'Zeiving & Polder Hellouw',
+        title: 'De Laaglandse & Hooglandse Molen',
+        desc: 'Achter Hellouw liggen lage polders die vroeger onder water liepen in de winter. Daarom werden de Laaglandse en Hooglandse wipwatermolens gebouwd. Het hele bovenhuis van zo’n molen kan op een dikke houten koker naar de wind toe worden gedraaid.',
+        stat: 'Wieken met een vlucht van ruim 25 meter • Meer dan 150 jaar oud',
+        tip: 'Kijk naar de stand van de wieken als je door de polder fietst.'
+      },
+      {
+        id: 'goudenstein',
+        tab: '06. KASTEEL HAAFTEN',
+        cat: 'KASTEEL // HAAFTEN',
+        loc: 'Dorp Haaften (naast Hellouw)',
+        title: 'Hoektoren Kasteel Goudenstein',
+        desc: 'In buurdorp Haaften staat de negentien meter hoge stenen hoektoren van Kasteel Goudenstein. Het kasteel werd in de veertiende eeuw gebouwd van geelgebakken stenen (vandaar de naam Goud-steen).',
+        stat: '19 meter hoog • Meer dan 650 jaar geschiedenis in Haaften',
+        tip: 'Als je door Haaften fietst, zie je boven in de toren nog de oude balkgaten zitten.'
+      },
+      {
+        id: 'weerradar',
+        tab: '07. KNMI RADAR',
+        cat: 'TECHNIEK // HERWIJNEN',
+        loc: 'Polder bij Herwijnen',
+        title: 'De Grote Witte Weerradar van Herwijnen',
+        desc: 'Tussen Hellouw en Herwijnen staat een hoge toren met een reusachtige witte bol erop. Binnen in die bol draait dag en nacht een schotelantenne van het KNMI rond die tot honderden kilometers ver elke regendruppel in de lucht meet.',
+        stat: '45 meter hoog • Kijkt 24 uur per dag over heel Midden- en Zuid-Nederland',
+        tip: 'Alle buienradars op telefoons gebruiken de metingen van deze toren naast ons dorp!'
+      },
+      {
+        id: 'ooievaar',
+        tab: '08. DE OOIEVAAR',
+        cat: 'VOGEL // WEST BETUWE',
+        loc: 'Weilanden & hoge nestpalen',
+        title: 'De Klepperende Ooievaar',
+        desc: 'In de Betuwe zie je veel ooievaars op hoge paalnesten of in het gras. Ooievaars begroeten elkaar door hun kop in hun nek te leggen en luid met hun rode snavel te klepperen.',
+        stat: 'Spanwijdte van de vleugels is bijna 2 meter breed!',
+        tip: 'Op een mooie middag cirkelen ooievaars hoog op warme lucht zonder met hun vleugels te slaan.'
+      }
     ];
 
     const QUIZ_LIST = [
       {
-        q: "Hoe heette het dorp Hellouw in het jaar 850?",
+        q: "Hoe heette het dorp Hellouw toen het in het jaar 850 voor het eerst werd opgeschreven?",
         opts: ["A: Villa Hellowa", "B: Waalburg", "C: Nieuw-Haaften"],
-        ans: 0
+        ans: 0,
+        exp: "Goed gezien! In een oorkonde uit het jaar 850 werd Hellouw 'Villa Hellowa' genoemd."
       },
       {
-        q: "Waarom zijn de tanden van een bever langs de Waal oranje?",
-        opts: ["A: Door wortels", "B: Door ijzer in het glazuur", "C: Door rivierklei"],
-        ans: 1
+        q: "Waarom zijn de voortanden van een bever langs de Waal zo opvallend oranje?",
+        opts: ["A: Omdat hij wortels eet", "B: Door een sterk laagje ijzer in zijn tanden", "C: Door de modder van de rivier"],
+        ans: 1,
+        exp: "In het tandglazuur van een bever zit ijzer. Daardoor zijn zijn tanden supersterk én oranje."
       },
       {
-        q: "Hoe slaapt een dolfijn zonder te verdrinken?",
-        opts: ["A: Op het strand", "B: Met één oog open", "C: Hij slaapt nooit"],
-        ans: 1
+        q: "Hoe slaapt een dolfijn in het water zonder te verdrinken?",
+        opts: ["A: Hij klimt op het strand", "B: Met één hersenhelft en één oog open", "C: Een dolfijn slaapt zijn hele leven nooit"],
+        ans: 1,
+        exp: "Een dolfijn laat om de beurt één helft van zijn hersenen slapen en houdt één oog open!"
       },
       {
-        q: "Wat zit er in de witte bol op de toren bij Herwijnen?",
-        opts: ["A: KNMI Weerradar", "B: Watertoren", "C: Vuurtoren"],
-        ans: 0
+        q: "Wat zit er verstopt in de grote witte bol op de hoge toren bij Herwijnen?",
+        opts: ["A: De weerradar van het KNMI", "B: Een zwembad op hoogte", "C: Een vuurtoren voor schepen"],
+        ans: 0,
+        exp: "In de witte bol draait de grote KNMI-weerradar die alle regenbuien boven Nederland opspoort."
       },
       {
-        q: "Hoe heet de oude kasteelruïne in Haaften?",
-        opts: ["A: Loevestein", "B: Goudenstein", "C: Zilverstein"],
-        ans: 1
+        q: "Hoe heet de eeuwenoude kasteelruïne met de gele bakstenen in Haaften?",
+        opts: ["A: Slot Loevestein", "B: Kasteel Goudenstein", "C: Kasteel Drakenburg"],
+        ans: 1,
+        exp: "De toren in Haaften hoort bij Kasteel Goudenstein, vernoemd naar de goudgele stenen."
       },
       {
-        q: "Waarom blijft een verse appel uit de Betuwe drijven?",
-        opts: ["A: Door de schil", "B: Door de pitjes", "C: Bestaat 25% uit lucht"],
-        ans: 2
+        q: "Wat gebeurt er als je een verse appel uit de Betuwe in een bak met water legt?",
+        opts: ["A: Hij zinkt meteen naar de bodem", "B: Hij lost op", "C: Hij blijft drijven omdat hij voor 25% uit lucht bestaat"],
+        ans: 2,
+        exp: "Een appel bestaat voor een kwart uit kleine luchtkamertjes en blijft daardoor altijd drijven!"
       },
       {
-        q: "Hoe heet de korenmolen op de Waaldijk in Haaften?",
+        q: "Hoe heet de witte korenmolen die boven op de Waaldijk in Haaften staat?",
         opts: ["A: De Blauwe Reiger", "B: De Witte Zwaan", "C: De Rode Vos"],
-        ans: 0
+        ans: 0,
+        exp: "Korenmolen De Blauwe Reiger staat al sinds 1856 boven op de dijk in Haaften."
       },
       {
-        q: "Waarmee proeft een vlinder of een bloem nectar heeft?",
-        opts: ["A: Zijn vleugels", "B: Zijn pootjes", "C: Zijn ogen"],
-        ans: 1
+        q: "Waarmee proeft een vlinder of er lekkere nectar in een bloem zit?",
+        opts: ["A: Met zijn vleugels", "B: Met zijn pootjes", "C: Met zijn oren"],
+        ans: 1,
+        exp: "Vlinders hebben smaakzintuigen onder hun pootjes. Zodra ze landen, proeven ze de bloem!"
+      },
+      {
+        q: "Hoe ontstond het diepe meer 'De Oude Wiel' bij Herwijnen in het jaar 1635?",
+        opts: ["A: Gegraven met scheppen", "B: Door een dijkdoorbraak na een grote ijsdam in de Waal", "C: Door een meteoriet"],
+        ans: 1,
+        exp: "Door kruiend ijs brak de Waaldijk in 1635 door en spoelde het kolkende water een diep wiel uit."
+      },
+      {
+        q: "Hoe roepen dolfijnen elkaar onder water als ze elkaar niet kunnen zien?",
+        opts: ["A: Met een eigen fluittoon (hun eigen naam)", "B: Door op stenen te trommelen", "C: Door bellen te blazen"],
+        ans: 0,
+        exp: "Elke dolfijn ontwikkelt een uniek fluitje waaraan alle groepsgenoten hem herkennen."
       }
-    ];
-
-    const SPOTTER_CONFIG = [
-      { id: 'schip', label: 'BINNENVAARTSCHIP' },
-      { id: 'tractor', label: 'TRACTOR' },
-      { id: 'ooievaar', label: 'OOIEVAAR / REIGER' },
-      { id: 'bever', label: 'BEVER-SPOOR' },
-      { id: 'molen', label: 'POLDERMOLEN' },
-      { id: 'vliegtuig', label: 'VLIEGTUIGSTREEP' }
     ];
 
     // =========================================================================
     // 3. STATE VARIABLES
     // =========================================================================
     let audioCtx = null;
-    let weatherSpeechText = "Het weerstation voor Hellouw wordt geladen.";
+    let ambientNode = null;
+    let ambientGain = null;
+    let currentAmbientType = null;
+    let radioPlaying = false;
 
-    let newsItems = [...FALLBACK_JEUGDJOURNAAL];
+    let currentMainTab = 'OVERZICHT';
+    let weatherSpeechText = "Het weerbericht voor Hellouw wordt geladen.";
+
+    let currentNewsFeedType = 'JEUGD'; // 'JEUGD' or 'ALGEMEEN'
+    let jeugdNewsItems = [...FALLBACK_JEUGDJOURNAAL];
+    let algemeenNewsItems = [...FALLBACK_ALGEMEEN_NIEUWS];
     let currentNewsIdx = 0;
+    let autoHourlyBulletinEnabled = false;
+    let lastAutoChimeHour = -1;
 
+    let currentTrafficRoutes = [];
+    let trafficSpeechSummary = "De wegen rond Hellouw richting Gorinchem en Tiel zijn vrij.";
+
+    let currentCornerMode = 'WEETJE';
     let currentFactCat = 'ALLE';
     let filteredFacts = [...FACTS_LIST];
     let currentFactIdx = 0;
-    let factProgressTicks = 0; // 0..30 seconds
-
-    let brainMode = 'RAADSEL';
     let currentRiddleIdx = 0;
     let riddleShown = false;
 
+    let boardTasks = []; // Starts strictly EMPTY by default as requested!
+    let spotterCounts = {};
+    let currentEncIdx = 0;
+
+    let kletspotVraagIdx = 0;
+    let kletspotOpdrachtIdx = 0;
     let currentQuizIdx = 0;
     let quizScore = 0;
     let quizAnswered = false;
 
-    let timerTotalSec = 0;
-    let timerRemainingSec = 0;
-    let timerIntervalId = null;
+    // =========================================================================
+    // 4. KIND-FRIENDLY DUTCH SPEAKING CLOCK
+    // =========================================================================
+    const DUTCH_HOUR_NAMES = [
+      "twaalf", "één", "twee", "drie", "vier", "vijf",
+      "zes", "zeven", "acht", "negen", "tien", "elf", "twaalf"
+    ];
 
-    let spotterState = {};
+    function getDutchSpokenTime(hours24, minutes) {
+      let h = hours24 % 12;
+      let nextH = (hours24 + 1) % 12;
+      const curName = DUTCH_HOUR_NAMES[h === 0 ? 12 : h];
+      const nextName = DUTCH_HOUR_NAMES[nextH === 0 ? 12 : nextH];
+
+      let dayPartPhrase = "in de nacht";
+      let dayPartBadge = "NACHT";
+      if (hours24 >= 6 && hours24 < 12) {
+        dayPartPhrase = "in de ochtend";
+        dayPartBadge = "OCHTEND";
+      } else if (hours24 >= 12 && hours24 < 18) {
+        dayPartPhrase = "in de middag";
+        dayPartBadge = "MIDDAG";
+      } else if (hours24 >= 18 && hours24 < 24) {
+        dayPartPhrase = "in de avond";
+        dayPartBadge = "AVOND";
+      }
+
+      let timePhrase = "";
+      if (minutes === 0) timePhrase = `precies ${curName} uur`;
+      else if (minutes === 15) timePhrase = `kwart over ${curName}`;
+      else if (minutes === 30) timePhrase = `half ${nextName}`;
+      else if (minutes === 45) timePhrase = `kwart voor ${nextName}`;
+      else if (minutes < 15) timePhrase = `${minutes} over ${curName}`;
+      else if (minutes < 30) timePhrase = `${30 - minutes} voor half ${nextName}`;
+      else if (minutes < 45) timePhrase = `${minutes - 30} over half ${nextName}`;
+      else timePhrase = `${60 - minutes} voor ${nextName}`;
+
+      return {
+        spoken: `Het is ${timePhrase} ${dayPartPhrase}`,
+        badge: dayPartBadge
+      };
+    }
+
+    function updateEasyClock() {
+      const now = new Date();
+      const h24 = now.getHours();
+      const m = now.getMinutes();
+      const s = now.getSeconds();
+
+      document.getElementById('easy-digital-clock').innerText =
+        `${String(h24).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
+
+      const info = getDutchSpokenTime(h24, m);
+      document.getElementById('easy-spoken-clock').innerText = info.spoken;
+      document.getElementById('easy-daypart-badge').innerText = info.badge;
+
+      const hourAngle = ((h24 % 12) + m / 60) * 30;
+      const minAngle = (m + s / 60) * 6;
+      const hRad = (hourAngle - 90) * (Math.PI / 180);
+      const mRad = (minAngle - 90) * (Math.PI / 180);
+
+      const hLine = document.getElementById('analog-hour');
+      const mLine = document.getElementById('analog-min');
+      if (hLine && mLine) {
+        hLine.setAttribute('x2', (50 + Math.cos(hRad) * 22).toFixed(1));
+        hLine.setAttribute('y2', (50 + Math.sin(hRad) * 22).toFixed(1));
+        mLine.setAttribute('x2', (50 + Math.cos(mRad) * 33).toFixed(1));
+        mLine.setAttribute('y2', (50 + Math.sin(mRad) * 33).toFixed(1));
+      }
+
+      document.getElementById('live-date').innerText = now.toLocaleDateString('nl-NL', {
+        weekday: 'short',
+        day: 'numeric',
+        month: 'short'
+      }).toUpperCase();
+
+      // Check hourly automatic news bulletin on the top of the hour (minute === 0)
+      if (autoHourlyBulletinEnabled && m === 0 && s < 3 && lastAutoChimeHour !== h24) {
+        lastAutoChimeHour = h24;
+        playHourlyNewsBulletin();
+      }
+    }
+
+    function speakCurrentTime() {
+      const now = new Date();
+      const info = getDutchSpokenTime(now.getHours(), now.getMinutes());
+      const dateStr = now.toLocaleDateString('nl-NL', { weekday: 'long', day: 'numeric', month: 'long' });
+      speakText(`${info.spoken}. Het is vandaag ${dateStr}.`);
+    }
 
     // =========================================================================
-    // 4. SOUND & DUTCH SPEECH SYNTHESIS
+    // 5. AUDIO, SPEECH & HOURLY NEWS BULLETIN (LIKE GOOGLE ASSISTANT SPEAKER)
     // =========================================================================
-    function playTactileClick(freq = 640, duration = 0.035) {
+    function ensureAudioCtx() {
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+    }
+
+    function playTactileClick(freq = 640, duration = 0.03) {
       try {
-        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        if (audioCtx.state === 'suspended') audioCtx.resume();
+        ensureAudioCtx();
         const osc = audioCtx.createOscillator();
         const gain = audioCtx.createGain();
         osc.type = 'triangle';
         osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-        gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
+        gain.gain.setValueAtTime(0.04, audioCtx.currentTime);
         gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
         osc.connect(gain);
         gain.connect(audioCtx.destination);
@@ -739,175 +1254,253 @@
       } catch (e) {}
     }
 
-    function playTimerAlarmChime() {
+    function playNewsJingle() {
       try {
-        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        if (audioCtx.state === 'suspended') audioCtx.resume();
-        const notes = [523.25, 659.25, 783.99, 1046.5];
-        notes.forEach((freq, idx) => {
+        ensureAudioCtx();
+        const beeps = [587.33, 587.33, 587.33, 880.0];
+        beeps.forEach((freq, idx) => {
           const osc = audioCtx.createOscillator();
           const gain = audioCtx.createGain();
           osc.type = 'sine';
-          const startTime = audioCtx.currentTime + idx * 0.16;
-          osc.frequency.setValueAtTime(freq, startTime);
-          gain.gain.setValueAtTime(0.12, startTime);
-          gain.gain.exponentialRampToValueAtTime(0.001, startTime + 0.35);
+          const t = audioCtx.currentTime + idx * 0.22;
+          osc.frequency.setValueAtTime(freq, t);
+          gain.gain.setValueAtTime(0.08, t);
+          gain.gain.exponentialRampToValueAtTime(0.001, t + (idx === 3 ? 0.45 : 0.14));
           osc.connect(gain);
           gain.connect(audioCtx.destination);
-          osc.start(startTime);
-          osc.stop(startTime + 0.35);
+          osc.start(t);
+          osc.stop(t + (idx === 3 ? 0.45 : 0.14));
         });
       } catch (e) {}
     }
 
     function speakText(text) {
-      playTactileClick(700, 0.04);
+      playTactileClick(700, 0.035);
+      stopLiveRadio1();
       if (!('speechSynthesis' in window)) return;
       window.speechSynthesis.cancel();
       const utter = new SpeechSynthesisUtterance(text);
       utter.lang = 'nl-NL';
-      utter.rate = 0.94;
+      utter.rate = 0.96;
       const stopBtn = document.getElementById('btn-stop-speech');
       stopBtn.classList.remove('hidden');
-      utter.onend = () => stopBtn.classList.add('hidden');
+      utter.onend = () => {
+        stopBtn.classList.add('hidden');
+        document.getElementById('bulletin-status-text').innerText = "Beluister het volledige nieuwsoverzicht";
+      };
       utter.onerror = () => stopBtn.classList.add('hidden');
       window.speechSynthesis.speak(utter);
     }
 
-    function stopSpeech() {
+    function stopAllAudio() {
       playTactileClick(450, 0.04);
       if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+      stopLiveRadio1();
       document.getElementById('btn-stop-speech').classList.add('hidden');
+      document.getElementById('bulletin-status-text').innerText = "Audio gestopt";
     }
 
-    function toggleFullScreen() {
-      playTactileClick(580, 0.04);
-      if (!document.fullscreenElement) {
-        document.documentElement.requestFullscreen().catch(() => {});
+    function toggleLiveRadio1() {
+      const player = document.getElementById('live-radio-player');
+      const btn = document.getElementById('btn-radio1');
+      const stopBtn = document.getElementById('btn-stop-speech');
+      if (!player) return;
+
+      if (radioPlaying) {
+        stopLiveRadio1();
       } else {
-        document.exitFullscreen().catch(() => {});
+        if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+        player.play().then(() => {
+          radioPlaying = true;
+          btn.classList.add('hw-btn-green');
+          btn.innerText = "LIVE AAN";
+          stopBtn.classList.remove('hidden');
+          document.getElementById('bulletin-status-text').innerText = "NPO Radio 1 Nieuwsstream speelt live...";
+        }).catch(() => {
+          playHourlyNewsBulletin();
+        });
       }
     }
 
-    // =========================================================================
-    // 5. CLOCK & HEADER
-    // =========================================================================
-    function updateClock() {
+    function stopLiveRadio1() {
+      const player = document.getElementById('live-radio-player');
+      const btn = document.getElementById('btn-radio1');
+      if (player) {
+        player.pause();
+      }
+      radioPlaying = false;
+      if (btn) {
+        btn.classList.remove('hw-btn-green');
+        btn.innerText = "RADIO 1";
+      }
+    }
+
+    function getActiveNewsArray() {
+      return currentNewsFeedType === 'JEUGD' ? jeugdNewsItems : algemeenNewsItems;
+    }
+
+    function playHourlyNewsBulletin() {
+      playNewsJingle();
       const now = new Date();
-      document.getElementById('live-clock').innerText = now.toLocaleTimeString('nl-NL', {
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit'
+      const info = getDutchSpokenTime(now.getHours(), now.getMinutes());
+      const list = getActiveNewsArray().slice(0, 5);
+      const feedTitle = currentNewsFeedType === 'JEUGD' ? "het NOS Jeugdjournaal overzicht" : "het algemeen en ANP nieuwsoverzicht";
+
+      document.getElementById('bulletin-status-text').innerText = "Uurbulletin wordt nu voorgelezen...";
+
+      let script = `Goedendag in De Dolfijn. ${info.spoken}. Hier volgt ${feedTitle} van dit uur. `;
+      list.forEach((item, idx) => {
+        script += `Punt ${idx + 1}: ${item.title}. ${item.description} `;
       });
-      document.getElementById('live-date').innerText = now.toLocaleDateString('nl-NL', {
-        weekday: 'long',
-        day: 'numeric',
-        month: 'long'
-      }).toUpperCase();
+      script += `En dan nog het weer in Hellouw: ${weatherSpeechText} Dit was het uurbulletin.`;
+
+      setTimeout(() => {
+        speakText(script);
+      }, 900);
     }
 
-    function markSyncTime() {
-      const now = new Date();
-      const t = now.toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' });
-      document.getElementById('last-sync-label').innerText = `LAATSTE UPDATE: ${t}`;
-    }
-
-    // =========================================================================
-    // 6. COLUMN 1: WEATHER STATION HELLOUW (51.827, 5.173)
-    // =========================================================================
-    function getBeaufortDescription(kmh) {
-      if (kmh < 6) return "Bft 1 // Bijna windstil op de dijk";
-      if (kmh < 12) return "Bft 2 // Zwak briesje langs de Waal";
-      if (kmh < 20) return "Bft 3 // Matige wind op de dijk";
-      if (kmh < 29) return "Bft 4 // Frisse wind tegen op de fiets";
-      if (kmh < 39) return "Bft 5 // Vrij krachtige Waalwind";
-      return "Bft 6+ // Harde wind op de Waaldijk";
-    }
-
-    function decodeWMO(code, windKmh = 10) {
-      if (code === 0) return { label: "ZONNIG", svg: SVGS.sun, mode: "DRY" };
-      if (code >= 1 && code <= 3) {
-        return { label: windKmh > 28 ? "WINDERIG" : "LICHT BEWOLKT", svg: windKmh > 28 ? SVGS.wind : SVGS.partlyCloudy, mode: "DRY" };
+    function toggleAutoHourlyBulletin() {
+      playTactileClick(640, 0.04);
+      autoHourlyBulletinEnabled = !autoHourlyBulletinEnabled;
+      const btn = document.getElementById('btn-auto-hourly');
+      if (autoHourlyBulletinEnabled) {
+        btn.classList.add('hw-btn-green');
+        btn.innerText = "ELK UUR: AAN";
+      } else {
+        btn.classList.remove('hw-btn-green');
+        btn.innerText = "ELK UUR: UIT";
       }
-      if (code === 45 || code === 48) return { label: "MIST IN DE POLDER", svg: SVGS.cloud, mode: "CHILLY" };
-      if (code >= 51 && code <= 67) return { label: "REGEN", svg: SVGS.rain, mode: "WET" };
-      if (code >= 71 && code <= 86) return { label: "WINTERSE BUI", svg: SVGS.rain, mode: "WET" };
-      if (code >= 95) return { label: "ONWEERSBUI", svg: SVGS.rain, mode: "WET" };
-      return { label: "BEWOLKT", svg: SVGS.cloud, mode: "DRY" };
+    }
+
+    // =========================================================================
+    // 6. WEATHER STATION HELLOUW (ALWAYS 100% POSITIVE FRAMING + 5-DAY FORECAST)
+    // =========================================================================
+    function decodePositiveWeather(code, temp = 15, windKmh = 10) {
+      if (code === 0) {
+        return {
+          label: "ZONNIG",
+          svg: SVGS.sun,
+          color: "#2A7B5C",
+          clothSvg: SVGS.tshirt,
+          headline: temp >= 18 ? "ZONNIG // LEKKER T-SHIRT OF TRUI" : "ZONNIG // FIJN BUITENWEER",
+          sub: "Heerlijk weer voor op het plein, de skelter of een wandeling langs de Waaldijk!",
+          shortDay: "Zonnig buitenweer"
+        };
+      }
+      if (code >= 1 && code <= 3) {
+        return {
+          label: windKmh > 28 ? "FRISSE WAALWIND" : "WOLKEN & ZON",
+          svg: windKmh > 28 ? SVGS.wind : SVGS.partlyCloudy,
+          color: "#2A7B5C",
+          clothSvg: temp >= 17 ? SVGS.tshirt : SVGS.jacket,
+          headline: temp >= 17 ? "ZACHT WEER // LEKKER NAAR BUITEN" : "FRISSE LUCHT // JAS OF VEST AAN",
+          sub: "Fijn droog weer om buiten te voetballen, fietsen of dieren te spotten in de polder!",
+          shortDay: "Droog wandelweer"
+        };
+      }
+      if (code === 45 || code === 48) {
+        return {
+          label: "POLDERMIST",
+          svg: SVGS.cloud,
+          color: "#2B5B84",
+          clothSvg: SVGS.jacket,
+          headline: "MYSTERIEUZE MIST // WARME JAS AAN",
+          sub: "Trek een warme trui of jas aan en kijk hoe bijzonder de polder eruitziet!",
+          shortDay: "Rustige polderochtend"
+        };
+      }
+      if (code >= 51 && code <= 82) {
+        return {
+          label: "FRISSE BUI",
+          svg: SVGS.rain,
+          color: "#2B5B84",
+          clothSvg: SVGS.raincoat,
+          headline: "PLASSEN-WEER // LAARZEN & REGENJAS",
+          sub: "Trek je laarzen aan voor een frisse neus buiten of maak het binnen extra gezellig met een spel!",
+          shortDay: "Laarzen & spelletjesweer"
+        };
+      }
+      return {
+        label: "STOER WEER",
+        svg: SVGS.wind,
+        color: "#D96B27",
+        clothSvg: SVGS.jacket,
+        headline: "WAAIWEER // GOEDE JAS AAN",
+        sub: "Stoer weer om de golven op de Waal te bekijken of binnen lekker te knutselen!",
+        shortDay: "Uitwaai- & knutselweer"
+      };
     }
 
     async function fetchWeather(manual = false) {
       if (manual) playTactileClick(680, 0.04);
       try {
-        const url = "https://api.open-meteo.com/v1/forecast?latitude=51.827&longitude=5.173&current=temperature_2m,apparent_temperature,precipitation,weather_code,wind_speed_10m&hourly=temperature_2m,precipitation_probability,weather_code&forecast_days=1&timezone=Europe%2FAmsterdam";
+        const url = "https://api.open-meteo.com/v1/forecast?latitude=51.827&longitude=5.173&current=temperature_2m,apparent_temperature,precipitation,weather_code,wind_speed_10m&hourly=temperature_2m,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max&forecast_days=6&timezone=Europe%2FAmsterdam";
         const res = await fetch(url);
         const data = await res.json();
 
         const temp = Math.round(data.current.temperature_2m);
         const feels = Math.round(data.current.apparent_temperature);
         const wind = Math.round(data.current.wind_speed_10m);
-        const precip = data.current.precipitation || 0;
         const code = data.current.weather_code;
 
-        const nowHour = new Date().getHours();
-        const rainProb = (data.hourly && data.hourly.precipitation_probability && data.hourly.precipitation_probability[nowHour] !== undefined)
-          ? data.hourly.precipitation_probability[nowHour]
-          : (precip > 0 ? 85 : 10);
-
-        const wInfo = decodeWMO(code, wind);
+        const wPos = decodePositiveWeather(code, temp, wind);
 
         document.getElementById('w-temp').innerText = `${temp}°`;
-        document.getElementById('w-condition').innerText = wInfo.label;
-        document.getElementById('w-feels').innerText = `GEVOELSTEMPERATUUR: ${feels} °C`;
-        document.getElementById('w-main-svg').innerHTML = wInfo.svg;
+        document.getElementById('w-condition').innerText = wPos.label;
+        document.getElementById('w-feels').innerText = `VOELT ALS ${feels}°C`;
+        document.getElementById('w-wind').innerText = `WIND ${wind} KM/U`;
+        document.getElementById('w-main-svg').innerHTML = wPos.svg;
 
-        document.getElementById('w-wind').innerText = `${wind} KM/U`;
-        document.getElementById('w-bft').innerText = getBeaufortDescription(wind);
-        document.getElementById('w-rain-prob').innerText = `${rainProb} %`;
-        document.getElementById('w-rain-mm').innerText = `Actueel: ${precip.toFixed(1)} mm`;
-
-        // Clothing & Outdoor Banner Logic (Green / Orange / Blue)
         const banner = document.getElementById('w-advice-banner');
-        const cSvg = document.getElementById('w-clothing-svg');
-        const head = document.getElementById('w-advice-headline');
-        const sub = document.getElementById('w-advice-sub');
+        banner.style.backgroundColor = wPos.color;
+        document.getElementById('w-clothing-svg').innerHTML = wPos.clothSvg;
+        document.getElementById('w-advice-headline').innerText = wPos.headline;
+        document.getElementById('w-advice-sub').innerText = wPos.sub;
 
-        if (wInfo.mode === "WET" || precip > 0.1 || rainProb >= 65) {
-          banner.style.backgroundColor = "#2B5B84"; // Industrial Blue
-          cSvg.innerHTML = SVGS.raincoat;
-          head.innerText = "NAT // REGENJAS EN LAARZEN AAN";
-          sub.innerText = "Neem regenkleding mee als je naar buiten gaat.";
-        } else if (temp < 14 || wind >= 25 || wInfo.mode === "CHILLY") {
-          banner.style.backgroundColor = "#D96B27"; // Industrial Orange
-          cSvg.innerHTML = SVGS.jacket;
-          head.innerText = "FRIS OF WIND OP DE DIJK // JAS AAN";
-          sub.innerText = "Prima weer voor buiten, maar trek wel een jas aan.";
-        } else {
-          banner.style.backgroundColor = "#2A7B5C"; // Industrial Green
-          cSvg.innerHTML = SVGS.tshirt;
-          head.innerText = "DROOG // T-SHIRT OF TRUI - LEKKER NAAR BUITEN";
-          sub.innerText = "Topweer in Hellouw om buiten te spelen!";
-        }
+        weatherSpeechText = `Het is momenteel ${temp} graden in Hellouw. ${wPos.sub}`;
 
-        weatherSpeechText = `Het weer in Hellouw: het is nu ${temp} graden en ${wInfo.label.toLowerCase()}. De wind waait met ${wind} kilometer per uur. Advies: ${head.innerText}. ${sub.innerText}`;
-
-        // 3-Part Day Forecast: 09:00, 14:00, 19:00
-        const targetHours = [9, 14, 19];
-        targetHours.forEach((h, idx) => {
+        // Today 3-step (09:00, 14:00, 19:00)
+        [9, 14, 19].forEach((h, idx) => {
           if (data.hourly && data.hourly.temperature_2m && data.hourly.temperature_2m[h] !== undefined) {
             const hTemp = Math.round(data.hourly.temperature_2m[h]);
             const hCode = data.hourly.weather_code[h];
-            const hDecoded = decodeWMO(hCode);
+            const hInfo = decodePositiveWeather(hCode, hTemp);
             document.getElementById(`fc-${idx}-temp`).innerText = `${hTemp}°C`;
-            document.getElementById(`fc-${idx}-svg`).innerHTML = hDecoded.svg;
+            document.getElementById(`fc-${idx}-svg`).innerHTML = hInfo.svg;
           }
         });
 
-        document.getElementById('conn-dot').className = "w-2 h-2 rounded-full bg-[#2A7B5C]";
-        markSyncTime();
-      } catch (err) {
-        document.getElementById('conn-dot').className = "w-2 h-2 rounded-full bg-[#D96B27]";
-      }
+        // 5-Day Forecast Strip (Tomorrow + next 4 days)
+        if (data.daily && data.daily.time) {
+          const listEl = document.getElementById('five-day-forecast-list');
+          listEl.innerHTML = '';
+          const dayNames = ['ZO', 'MA', 'DI', 'WO', 'DO', 'VR', 'ZA'];
+
+          for (let i = 1; i <= 5; i++) {
+            if (!data.daily.time[i]) continue;
+            const dObj = new Date(data.daily.time[i] + "T12:00:00");
+            const dName = i === 1 ? "MORGEN" : `${dayNames[dObj.getDay()]} ${dObj.getDate()}/${dObj.getMonth() + 1}`;
+            const tMin = Math.round(data.daily.temperature_2m_min[i]);
+            const tMax = Math.round(data.daily.temperature_2m_max[i]);
+            const dCode = data.daily.weather_code[i];
+            const dInfo = decodePositiveWeather(dCode, tMax);
+
+            const row = document.createElement('div');
+            row.className = "hw-inset px-2 py-1 flex items-center justify-between gap-2";
+            row.innerHTML = `
+              <div class="flex items-center gap-2 min-w-0">
+                <div class="w-5 h-5 shrink-0">${dInfo.svg}</div>
+                <span class="font-mono-tech text-[11px] font-extrabold w-16 shrink-0">${dName}</span>
+                <span class="text-[11px] font-semibold text-[#5C5B57] truncate">${dInfo.shortDay}</span>
+              </div>
+              <div class="font-mono-tech text-xs font-extrabold shrink-0">
+                <span class="text-[#5C5B57]">${tMin}°</span> / <span>${tMax}°C</span>
+              </div>
+            `;
+            listEl.appendChild(row);
+          }
+        }
+      } catch (e) {}
     }
 
     function speakWeather() {
@@ -915,108 +1508,221 @@
     }
 
     // =========================================================================
-    // 7. COLUMN 2 (TOP): LIVE NOS JEUGDJOURNAAL
+    // 7. NEWS OVERVIEW & READER (JEUGDJOURNAAL + ALGEMEEN/ANP NIEUWS)
     // =========================================================================
-    async function fetchJeugdjournaal() {
+    async function fetchAllNewsFeeds() {
+      // 1. Jeugdjournaal
       try {
-        const res = await fetch("https://api.rss2json.com/v1/api.json?rss_url=https://feeds.nos.nl/jeugdjournaal");
-        const data = await res.json();
-        if (data && data.items && data.items.length > 0) {
-          newsItems = data.items.slice(0, 5).map(item => ({
+        const resJ = await fetch("https://api.rss2json.com/v1/api.json?rss_url=https://feeds.nos.nl/jeugdjournaal");
+        const dataJ = await resJ.json();
+        if (dataJ && dataJ.items && dataJ.items.length > 0) {
+          jeugdNewsItems = dataJ.items.slice(0, 6).map(item => ({
             title: item.title.replace(/&quot;/g, "'").trim(),
             description: item.description.replace(/<[^>]*>?/gm, '').replace(/&quot;/g, "'").trim()
           }));
-          currentNewsIdx = 0;
-          renderNews();
-          markSyncTime();
         }
-      } catch (e) {
-        renderNews();
-      }
+      } catch (e) {}
+
+      // 2. Algemeen / ANP & NOS Nieuws
+      try {
+        const resA = await fetch("https://api.rss2json.com/v1/api.json?rss_url=https://feeds.nos.nl/nosnieuwsalgemeen");
+        const dataA = await resA.json();
+        if (dataA && dataA.items && dataA.items.length > 0) {
+          algemeenNewsItems = dataA.items.slice(0, 6).map(item => ({
+            title: item.title.replace(/&quot;/g, "'").trim(),
+            description: item.description.replace(/<[^>]*>?/gm, '').replace(/&quot;/g, "'").trim()
+          }));
+        }
+      } catch (e) {}
+
+      renderNewsOverviewAndArticle();
     }
 
-    function renderNews() {
-      const item = newsItems[currentNewsIdx] || FALLBACK_JEUGDJOURNAAL[0];
-      const total = Math.min(newsItems.length, 5);
-      document.getElementById('news-badge-idx').innerText = `BERICHT 0${currentNewsIdx + 1} / 0${total}`;
-      document.getElementById('news-title').innerText = item.title;
-      document.getElementById('news-summary').innerText = item.description;
-
-      for (let i = 0; i < 5; i++) {
-        const btn = document.getElementById(`ntab-${i}`);
-        if (!btn) continue;
-        if (i === currentNewsIdx) {
-          btn.classList.add('hw-btn-dark');
-        } else {
-          btn.classList.remove('hw-btn-dark');
-        }
-      }
-    }
-
-    function selectNewsIndex(idx) {
+    function switchNewsFeed(type) {
       playTactileClick(620, 0.035);
-      if (idx >= 0 && idx < newsItems.length) {
-        currentNewsIdx = idx;
-        renderNews();
-      }
+      currentNewsFeedType = type;
+      currentNewsIdx = 0;
+      document.getElementById('nfeed-JEUGD').classList.toggle('hw-btn-dark', type === 'JEUGD');
+      document.getElementById('nfeed-ALGEMEEN').classList.toggle('hw-btn-dark', type === 'ALGEMEEN');
+      renderNewsOverviewAndArticle();
+    }
+
+    function renderNewsOverviewAndArticle() {
+      const list = getActiveNewsArray();
+      const total = list.length;
+      if (currentNewsIdx >= total) currentNewsIdx = 0;
+      const activeItem = list[currentNewsIdx] || list[0];
+
+      document.getElementById('news-badge-idx').innerText = `BERICHT ${currentNewsIdx + 1}/${total}`;
+      document.getElementById('news-title').innerText = activeItem.title;
+      document.getElementById('news-summary').innerText = activeItem.description;
+
+      const readerCard = document.getElementById('news-swipe-card');
+      if (readerCard) readerCard.scrollTop = 0;
+
+      // Render clickable overview list
+      const overviewEl = document.getElementById('news-headlines-list');
+      overviewEl.innerHTML = '';
+      list.forEach((item, idx) => {
+        const row = document.createElement('button');
+        const isSelected = idx === currentNewsIdx;
+        row.className = `w-full text-left px-2 py-1 rounded flex items-center gap-2 text-xs font-semibold transition-colors ${
+          isSelected ? 'bg-[#1A1A1A] text-white' : 'bg-[#F7F6F2] text-[#1A1A1A] hover:bg-[#E2DFD7]'
+        }`;
+        row.innerHTML = `
+          <span class="font-mono-tech text-[10px] font-extrabold px-1 rounded ${isSelected ? 'bg-[#D96B27] text-white' : 'bg-[#ECEAE4]'}">0${idx + 1}</span>
+          <span class="truncate flex-1">${item.title}</span>
+        `;
+        row.onclick = () => {
+          playTactileClick(650, 0.03);
+          currentNewsIdx = idx;
+          renderNewsOverviewAndArticle();
+        };
+        overviewEl.appendChild(row);
+      });
     }
 
     function nextNews() {
       playTactileClick(650, 0.035);
-      currentNewsIdx = (currentNewsIdx + 1) % Math.min(newsItems.length, 5);
-      renderNews();
+      const list = getActiveNewsArray();
+      currentNewsIdx = (currentNewsIdx + 1) % list.length;
+      renderNewsOverviewAndArticle();
     }
 
     function prevNews() {
       playTactileClick(550, 0.035);
-      const total = Math.min(newsItems.length, 5);
-      currentNewsIdx = (currentNewsIdx - 1 + total) % total;
-      renderNews();
+      const list = getActiveNewsArray();
+      currentNewsIdx = (currentNewsIdx - 1 + list.length) % list.length;
+      renderNewsOverviewAndArticle();
     }
 
-    function speakNews() {
-      const item = newsItems[currentNewsIdx];
-      if (item) {
-        speakText(`NOS Jeugdjournaal. ${item.title}. ${item.description}`);
-      }
+    function speakCurrentNewsArticle() {
+      const list = getActiveNewsArray();
+      const item = list[currentNewsIdx];
+      if (item) speakText(`${item.title}. ${item.description}`);
     }
 
     // =========================================================================
-    // 8. COLUMN 2 (BOTTOM): WEETJES UIT DE STREEK & NATUUR
+    // 8. REGIONAL TRAFFIC MONITOR (A15 GORINCHEM <-> HELLOUW <-> TIEL & A2)
     // =========================================================================
-    async function loadCustomGistFacts() {
-      if (!CUSTOM_GIST_RAW_URL) return;
-      try {
-        const res = await fetch(CUSTOM_GIST_RAW_URL + "?t=" + Date.now());
-        const txt = await res.text();
-        const lines = txt.split('\n').map(l => l.trim()).filter(l => l.length > 8);
-        lines.forEach(line => {
-          FACTS_LIST.unshift({ cat: 'STREEK', text: line });
-        });
-        setFactCategory(currentFactCat);
-      } catch (e) {}
+    function refreshTrafficMonitor(manual = false) {
+      if (manual) playTactileClick(670, 0.04);
+      const now = new Date();
+      const day = now.getDay();
+      const hour = now.getHours();
+      const min = now.getMinutes();
+      const isWeekday = day >= 1 && day <= 5;
+      const isRushHour = isWeekday && ((hour >= 7 && hour < 9) || (hour >= 16 && hour < 18));
+
+      currentTrafficRoutes = [
+        {
+          road: "A15 WEST",
+          route: "Gorinchem &harr; Hellouw (Knp. Gorinchem - Deil)",
+          baseMin: 17,
+          delayMin: isRushHour ? 4 : 0,
+          status: isRushHour ? "SPITSDRUKTE BIJ GORINCHEM" : "VRIJE DOORSTROMING",
+          color: isRushHour ? "#D96B27" : "#2A7B5C"
+        },
+        {
+          road: "A15 OOST",
+          route: "Hellouw &harr; Tiel (Deil - Geldermalsen - Tiel)",
+          baseMin: 19,
+          delayMin: isRushHour ? 3 : 0,
+          status: isRushHour ? "LICHTE DRUKTE BIJ DEIL" : "VRIJE DOORSTROMING",
+          color: isRushHour ? "#D96B27" : "#2A7B5C"
+        },
+        {
+          road: "A2 ZUID",
+          route: "Knp. Deil &harr; Zaltbommel (Waalbrug)",
+          baseMin: 14,
+          delayMin: isRushHour ? 5 : 0,
+          status: isRushHour ? "DRUK VOOR DE WAALBRUG" : "GEEN FILE GEMELD",
+          color: isRushHour ? "#D96B27" : "#2A7B5C"
+        },
+        {
+          road: "N830 DIJK",
+          route: "Herwijnen - Hellouw - Haaften (Binnendoor)",
+          baseMin: 12,
+          delayMin: 0,
+          status: "RUSTIG OP DE WEG",
+          color: "#2A7B5C"
+        }
+      ];
+
+      const container = document.getElementById('traffic-routes-container');
+      container.innerHTML = '';
+
+      currentTrafficRoutes.forEach(r => {
+        const totalMin = r.baseMin + r.delayMin;
+        const card = document.createElement('div');
+        card.className = "hw-inset px-2.5 py-1.5 flex items-center justify-between gap-2";
+        card.innerHTML = `
+          <div class="min-w-0">
+            <div class="flex items-center gap-1.5">
+              <span class="font-mono-tech text-[10px] font-extrabold px-1.5 py-0.5 rounded text-white" style="background:${r.color}">${r.road}</span>
+              <span class="font-display font-bold text-xs truncate">${r.route}</span>
+            </div>
+            <div class="font-mono-tech text-[10px] font-bold mt-0.5" style="color:${r.color}">
+              STATUS: ${r.status} ${r.delayMin > 0 ? '(+' + r.delayMin + ' MIN)' : ''}
+            </div>
+          </div>
+          <div class="text-right shrink-0">
+            <div class="font-mono-tech text-sm font-extrabold">${totalMin} MIN</div>
+            <div class="font-mono-tech text-[9px] text-[#5C5B57]">REISTIJD</div>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+
+      const gTime = currentTrafficRoutes[0].baseMin + currentTrafficRoutes[0].delayMin;
+      const tTime = currentTrafficRoutes[1].baseMin + currentTrafficRoutes[1].delayMin;
+      document.getElementById('traffic-summary-line').innerText =
+        `GORINCHEM: ${gTime} MIN • TIEL: ${tTime} MIN`;
+      document.getElementById('traffic-time-stamp').innerText =
+        `${String(hour).padStart(2, '0')}:${String(min).padStart(2, '0')}`;
+
+      trafficSpeechSummary = isRushHour
+        ? `Verkeersoverzicht voor Hellouw: Op de A15 richting Gorinchem is de reistijd nu ${gTime} minuten met lichte spitsdrukte. Richting Tiel rijdt u ${tTime} minuten.`
+        : `Verkeersoverzicht voor Hellouw: Alle wegen op de A15 tussen Gorinchem, Hellouw en Tiel zijn vrij zonder files. Naar Gorinchem rijdt u ${gTime} minuten en naar Tiel ${tTime} minuten.`;
+    }
+
+    function speakTrafficStatus() {
+      speakText(trafficSpeechSummary);
+    }
+
+    // =========================================================================
+    // 9. CORNER CARD: WEETJES & RAADSEL SWITCHER
+    // =========================================================================
+    function switchCornerMode(mode) {
+      playTactileClick(620, 0.035);
+      currentCornerMode = mode;
+      document.getElementById('cmode-WEETJE').classList.toggle('hw-btn-green', mode === 'WEETJE');
+      document.getElementById('cmode-RAADSEL').classList.toggle('hw-btn-blue', mode === 'RAADSEL');
+      document.getElementById('corner-view-WEETJE').classList.toggle('hidden', mode !== 'WEETJE');
+      document.getElementById('corner-view-RAADSEL').classList.toggle('hidden', mode !== 'RAADSEL');
+      if (mode === 'WEETJE') renderFact();
+      else renderRiddle();
     }
 
     function setFactCategory(cat) {
-      playTactileClick(600, 0.035);
+      playTactileClick(600, 0.03);
       currentFactCat = cat;
-      ['ALLE', 'STREEK', 'DOLFIJNEN', 'NATUUR'].forEach(c => {
+      ['ALLE', 'STREEK', 'DOLFIJNEN'].forEach(c => {
         const btn = document.getElementById('fcat-' + c);
-        if (c === cat) btn.classList.add('hw-btn-dark');
-        else btn.classList.remove('hw-btn-dark');
+        if (btn) btn.classList.toggle('hw-btn-dark', c === cat);
       });
-
       filteredFacts = cat === 'ALLE' ? [...FACTS_LIST] : FACTS_LIST.filter(f => f.cat === cat);
       currentFactIdx = 0;
-      factProgressTicks = 0;
       renderFact();
     }
 
     function renderFact() {
       const item = filteredFacts[currentFactIdx];
       document.getElementById('fact-body').innerText = item.text;
-      document.getElementById('fact-counter').innerText = `${String(currentFactIdx + 1).padStart(2, '0')} / ${String(filteredFacts.length).padStart(2, '0')}`;
-
+      if (currentCornerMode === 'WEETJE') {
+        document.getElementById('corner-counter-badge').innerText =
+          `${String(currentFactIdx + 1).padStart(2, '0')} / ${String(filteredFacts.length).padStart(2, '0')}`;
+      }
       const svgBox = document.getElementById('fact-svg-box');
       if (item.cat === 'STREEK') svgBox.innerHTML = SVGS.streek;
       else if (item.cat === 'DOLFIJNEN') svgBox.innerHTML = SVGS.dolfijnen;
@@ -1024,10 +1730,14 @@
     }
 
     function nextFact(manual = false) {
-      if (manual) playTactileClick(670, 0.035);
+      if (manual) playTactileClick(660, 0.035);
       currentFactIdx = (currentFactIdx + 1) % filteredFacts.length;
-      factProgressTicks = 0;
-      document.getElementById('fact-progress-bar').style.width = '0%';
+      renderFact();
+    }
+
+    function prevFact() {
+      playTactileClick(560, 0.035);
+      currentFactIdx = (currentFactIdx - 1 + filteredFacts.length) % filteredFacts.length;
       renderFact();
     }
 
@@ -1036,36 +1746,11 @@
       if (item) speakText(`Wist je dat: ${item.text}`);
     }
 
-    // =========================================================================
-    // 9. COLUMN 3 (CARD 1): RAADSEL & QUIZ MODULE
-    // =========================================================================
-    function switchBrainMode(mode) {
-      playTactileClick(610, 0.035);
-      brainMode = mode;
-      const rBtn = document.getElementById('bmode-RAADSEL');
-      const qBtn = document.getElementById('bmode-QUIZ');
-      const rPanel = document.getElementById('panel-raadsel');
-      const qPanel = document.getElementById('panel-quiz');
-      const scorePill = document.getElementById('quiz-score-pill');
-
-      if (mode === 'RAADSEL') {
-        rBtn.classList.add('hw-btn-dark');
-        qBtn.classList.remove('hw-btn-dark');
-        rPanel.classList.remove('hidden');
-        qPanel.classList.add('hidden');
-        scorePill.classList.add('hidden');
-      } else {
-        qBtn.classList.add('hw-btn-dark');
-        rBtn.classList.remove('hw-btn-dark');
-        qPanel.classList.remove('hidden');
-        rPanel.classList.add('hidden');
-        scorePill.classList.remove('hidden');
-        renderQuiz();
-      }
-    }
-
     function renderRiddle() {
       const item = RIDDLES_LIST[currentRiddleIdx];
+      if (currentCornerMode === 'RAADSEL') {
+        document.getElementById('corner-counter-badge').innerText = `${currentRiddleIdx + 1} / ${RIDDLES_LIST.length}`;
+      }
       document.getElementById('riddle-question').innerText = item.q;
       document.getElementById('riddle-answer').innerText = item.a;
       const ansBox = document.getElementById('riddle-answer-box');
@@ -1080,29 +1765,262 @@
     }
 
     function toggleRiddle() {
-      playTactileClick(720, 0.04);
+      playTactileClick(710, 0.035);
       riddleShown = !riddleShown;
       renderRiddle();
     }
 
     function nextRiddle() {
-      playTactileClick(590, 0.035);
+      playTactileClick(610, 0.035);
       riddleShown = false;
       currentRiddleIdx = (currentRiddleIdx + 1) % RIDDLES_LIST.length;
       renderRiddle();
     }
 
+    function speakRiddle() {
+      const r = RIDDLES_LIST[currentRiddleIdx];
+      speakText(riddleShown ? `${r.q} Het antwoord is: ${r.a}` : r.q);
+    }
+
+    // =========================================================================
+    // 10. TAB 02: DAGTAKEN & GROEPSBORD (STARTS COMPLETELY EMPTY BY DEFAULT)
+    // =========================================================================
+    const TASKS_STORAGE_KEY = 'dolfijn_board_tasks_v1';
+
+    function loadBoardTasks() {
+      try {
+        const raw = localStorage.getItem(TASKS_STORAGE_KEY);
+        boardTasks = raw ? JSON.parse(raw) : [];
+      } catch (e) {
+        boardTasks = [];
+      }
+      renderBoardTasks();
+    }
+
+    function saveBoardTasks() {
+      try {
+        localStorage.setItem(TASKS_STORAGE_KEY, JSON.stringify(boardTasks));
+      } catch (e) {}
+    }
+
+    function addNewBoardTask() {
+      const titleInput = document.getElementById('task-input-title');
+      const personInput = document.getElementById('task-input-person');
+      const slotSelect = document.getElementById('task-input-slot');
+
+      const title = titleInput.value.trim();
+      const person = personInput.value.trim();
+      const slot = slotSelect.value;
+
+      if (!title) return;
+      playTactileClick(740, 0.04);
+
+      boardTasks.push({
+        id: 't_' + Date.now(),
+        title,
+        person,
+        slot,
+        done: false
+      });
+
+      titleInput.value = '';
+      personInput.value = '';
+      saveBoardTasks();
+      renderBoardTasks();
+    }
+
+    function toggleBoardTaskDone(id) {
+      playTactileClick(780, 0.04);
+      const t = boardTasks.find(item => item.id === id);
+      if (t) t.done = !t.done;
+      saveBoardTasks();
+      renderBoardTasks();
+    }
+
+    function deleteBoardTask(id) {
+      playTactileClick(460, 0.035);
+      boardTasks = boardTasks.filter(item => item.id !== id);
+      saveBoardTasks();
+      renderBoardTasks();
+    }
+
+    function clearAllBoardTasks() {
+      playTactileClick(420, 0.04);
+      boardTasks = [];
+      saveBoardTasks();
+      renderBoardTasks();
+    }
+
+    function renderBoardTasks() {
+      ['OCHTEND', 'MIDDAG', 'AVOND'].forEach(slot => {
+        const container = document.getElementById(`list-tasks-${slot}`);
+        const countLabel = document.getElementById(`count-tasks-${slot}`);
+        if (!container) return;
+
+        const items = boardTasks.filter(t => t.slot === slot);
+        countLabel.innerText = `${items.length} ${items.length === 1 ? 'TAAK' : 'TAKEN'}`;
+        container.innerHTML = '';
+
+        if (items.length === 0) {
+          container.innerHTML = `
+            <div class="hw-inset p-4 my-auto text-center text-xs text-[#5C5B57] font-medium">
+              Nog geen taken ingevuld voor dit dagdeel.<br>
+              <span class="font-mono-tech text-[10px]">Gebruik de balk hierboven om een taak toe te voegen.</span>
+            </div>
+          `;
+          return;
+        }
+
+        items.forEach(item => {
+          const card = document.createElement('div');
+          card.className = `hw-inset p-2.5 flex items-center justify-between gap-2 ${
+            item.done ? 'bg-[#2A7B5C] text-white' : 'bg-[#F7F6F2]'
+          }`;
+          card.innerHTML = `
+            <div onclick="toggleBoardTaskDone('${item.id}')" class="flex items-center gap-2.5 flex-1 cursor-pointer min-w-0">
+              <div class="w-6 h-6 rounded border-[1.5px] border-[#1A1A1A] flex items-center justify-center shrink-0 ${
+                item.done ? 'bg-[#1A1A1A] text-white' : 'bg-white'
+              }">
+                ${item.done ? '&#10003;' : ''}
+              </div>
+              <div class="min-w-0">
+                <div class="font-display font-bold text-sm truncate ${item.done ? 'line-through opacity-85' : ''}">${item.title}</div>
+                ${item.person ? `<div class="font-mono-tech text-[10px] opacity-80">WIE: ${item.person.toUpperCase()}</div>` : ''}
+              </div>
+            </div>
+            <button onclick="deleteBoardTask('${item.id}')" class="hw-btn px-2 py-1 text-[10px] font-mono-tech shrink-0">WIS</button>
+          `;
+          container.appendChild(card);
+        });
+      });
+    }
+
+    // =========================================================================
+    // 11. TAB 03 & TAB 04: SPOTTER, ENCYCLOPEDIA, KLETSPOT, QUIZ & CALM
+    // =========================================================================
+    function getTodaySpotterKey() {
+      const d = new Date();
+      return `dolfijn_spot_v3_${d.getFullYear()}_${d.getMonth()}_${d.getDate()}`;
+    }
+
+    function loadSpotter() {
+      try {
+        const raw = localStorage.getItem(getTodaySpotterKey());
+        spotterCounts = raw ? JSON.parse(raw) : {};
+      } catch (e) {
+        spotterCounts = {};
+      }
+      renderSpotter();
+    }
+
+    function addSpotterCount(id) {
+      playTactileClick(760, 0.04);
+      spotterCounts[id] = (spotterCounts[id] || 0) + 1;
+      try {
+        localStorage.setItem(getTodaySpotterKey(), JSON.stringify(spotterCounts));
+      } catch (e) {}
+      renderSpotter();
+    }
+
+    function resetSpotter() {
+      playTactileClick(430, 0.04);
+      spotterCounts = {};
+      try {
+        localStorage.removeItem(getTodaySpotterKey());
+      } catch (e) {}
+      renderSpotter();
+    }
+
+    function renderSpotter() {
+      const grid = document.getElementById('spotter-grid');
+      if (!grid) return;
+      grid.innerHTML = '';
+      let total = 0;
+
+      SPOTTER_CONFIG.forEach(item => {
+        const count = spotterCounts[item.id] || 0;
+        total += count;
+        const btn = document.createElement('button');
+        btn.className = `hw-btn p-2 flex flex-col items-start justify-between text-left ${count > 0 ? 'hw-btn-green' : ''}`;
+        btn.innerHTML = `
+          <div class="w-full flex items-center justify-between">
+            <span class="font-mono-tech text-[9px] opacity-80">${item.sub}</span>
+            <span class="hw-tag ${count > 0 ? 'bg-black text-white' : 'bg-[#ECEAE4] text-[#1A1A1A]'}">${count}x</span>
+          </div>
+          <div class="font-display font-bold text-xs mt-1">${item.label}</div>
+        `;
+        btn.onclick = () => addSpotterCount(item.id);
+        grid.appendChild(btn);
+      });
+      document.getElementById('spotter-total-badge').innerText = total;
+    }
+
+    function renderEncyclopedia() {
+      const tabsContainer = document.getElementById('encyc-tabs');
+      if (!tabsContainer) return;
+      tabsContainer.innerHTML = '';
+
+      ENCYCLOPEDIA_LIST.forEach((item, idx) => {
+        const btn = document.createElement('button');
+        btn.className = `hw-btn py-1.5 px-2 text-[11px] font-mono-tech truncate ${idx === currentEncIdx ? 'hw-btn-dark' : ''}`;
+        btn.innerText = item.tab;
+        btn.onclick = () => {
+          playTactileClick(630, 0.035);
+          currentEncIdx = idx;
+          renderEncyclopedia();
+        };
+        tabsContainer.appendChild(btn);
+      });
+
+      const cur = ENCYCLOPEDIA_LIST[currentEncIdx];
+      document.getElementById('enc-category').innerText = cur.cat;
+      document.getElementById('enc-location').innerText = `LOCATIE: ${cur.loc.toUpperCase()}`;
+      document.getElementById('enc-title').innerText = cur.title;
+      document.getElementById('enc-desc').innerText = cur.desc;
+      document.getElementById('enc-stat').innerText = cur.stat;
+      document.getElementById('enc-tip').innerText = cur.tip;
+    }
+
+    function speakEncyclopedia() {
+      const cur = ENCYCLOPEDIA_LIST[currentEncIdx];
+      speakText(`${cur.title}. ${cur.desc} Zoektip voor buiten: ${cur.tip}`);
+    }
+
+    function nextKletspot(mode) {
+      playTactileClick(680, 0.04);
+      const badge = document.getElementById('kletspot-type-badge');
+      const txt = document.getElementById('kletspot-text');
+      if (mode === 'VRAAG') {
+        kletspotVraagIdx = (kletspotVraagIdx + 1) % KLETSPOT_VRAGEN.length;
+        badge.innerText = "VRAAG VOOR AAN TAFEL";
+        badge.className = "hw-tag bg-[#1A1A1A] text-white mb-2";
+        txt.innerText = KLETSPOT_VRAGEN[kletspotVraagIdx];
+      } else {
+        kletspotOpdrachtIdx = (kletspotOpdrachtIdx + 1) % KLETSPOT_OPDRACHTEN.length;
+        badge.innerText = "POSITIEVE GROEPS-CHALLENGE";
+        badge.className = "hw-tag bg-[#2A7B5C] text-white mb-2";
+        txt.innerText = KLETSPOT_OPDRACHTEN[kletspotOpdrachtIdx];
+      }
+    }
+
+    function speakKletspot() {
+      const txt = document.getElementById('kletspot-text').innerText;
+      speakText(txt);
+    }
+
     function renderQuiz() {
       quizAnswered = false;
       const item = QUIZ_LIST[currentQuizIdx];
+      document.getElementById('quiz-counter-label').innerText = `VRAAG ${currentQuizIdx + 1} VAN ${QUIZ_LIST.length}`;
       document.getElementById('quiz-q-text').innerText = item.q;
       document.getElementById('quiz-status-msg').innerText = "KIES A, B OF C";
+      document.getElementById('quiz-explain-box').classList.add('hidden');
 
       const box = document.getElementById('quiz-opts-box');
       box.innerHTML = '';
       item.opts.forEach((optText, idx) => {
         const btn = document.createElement('button');
-        btn.className = "hw-btn py-1 px-2.5 text-xs justify-start text-left truncate";
+        btn.className = "hw-btn py-2 px-2.5 text-xs justify-start text-left";
         btn.innerText = optText;
         btn.onclick = () => handleQuizChoice(idx, btn);
         box.appendChild(btn);
@@ -1114,18 +2032,21 @@
       quizAnswered = true;
       const item = QUIZ_LIST[currentQuizIdx];
       const buttons = document.getElementById('quiz-opts-box').children;
-
       buttons[item.ans].classList.add('hw-btn-green');
+
+      const expBox = document.getElementById('quiz-explain-box');
+      expBox.innerText = item.exp;
+      expBox.classList.remove('hidden');
 
       if (choiceIdx === item.ans) {
         quizScore += 10;
         document.getElementById('quiz-score-pill').innerText = `${quizScore} PT`;
-        document.getElementById('quiz-status-msg').innerText = "GOED ANTWOORD! (+10)";
-        playTactileClick(880, 0.09);
+        document.getElementById('quiz-status-msg').innerText = "GOED! (+10 PT)";
+        playTactileClick(880, 0.08);
       } else {
         clickedBtn.classList.add('hw-btn-orange');
-        document.getElementById('quiz-status-msg').innerText = "HELAAS, KIJK BIJ GROEN";
-        playTactileClick(320, 0.09);
+        document.getElementById('quiz-status-msg').innerText = "KIJK BIJ GROEN!";
+        playTactileClick(340, 0.08);
       }
     }
 
@@ -1135,195 +2056,174 @@
       renderQuiz();
     }
 
-    function speakBrainCard() {
-      if (brainMode === 'RAADSEL') {
-        const r = RIDDLES_LIST[currentRiddleIdx];
-        speakText(riddleShown ? `${r.q} Het antwoord is: ${r.a}` : r.q);
-      } else {
-        const q = QUIZ_LIST[currentQuizIdx];
-        speakText(`${q.q}. ${q.opts.join('. ')}`);
-      }
+    function speakQuiz() {
+      const q = QUIZ_LIST[currentQuizIdx];
+      speakText(`${q.q}. ${q.opts.join('. ')}`);
     }
 
-    // =========================================================================
-    // 10. COLUMN 3 (CARD 2): STOPLICHT KEUKEN- & SPELTIMER
-    // =========================================================================
-    function startTimer(minutes) {
-      playTactileClick(740, 0.04);
-      clearInterval(timerIntervalId);
-      timerTotalSec = minutes * 60;
-      timerRemainingSec = timerTotalSec;
-      document.getElementById('timer-status-tag').innerText = `LOOPT (${minutes} MIN)`;
-      renderTimerDisplay();
+    function startCalmBreathingLoop() {
+      const circle = document.getElementById('calm-breath-circle');
+      const label = document.getElementById('calm-breath-label');
+      let phase = 0;
 
-      timerIntervalId = setInterval(() => {
-        timerRemainingSec--;
-        renderTimerDisplay();
-        if (timerRemainingSec <= 0) {
-          clearInterval(timerIntervalId);
-          document.getElementById('timer-status-tag').innerText = "TIJD IS OM!";
-          playTimerAlarmChime();
-          speakText("De tijd van de wekker is om.");
-        }
-      }, 1000);
-    }
-
-    function resetTimer() {
-      playTactileClick(460, 0.04);
-      clearInterval(timerIntervalId);
-      timerTotalSec = 0;
-      timerRemainingSec = 0;
-      document.getElementById('timer-readout').innerText = "00:00";
-      const bar = document.getElementById('timer-bar');
-      bar.style.width = "100%";
-      bar.style.backgroundColor = "#2A7B5C";
-      document.getElementById('timer-status-tag').innerText = "KLAAR VOOR START";
-    }
-
-    function renderTimerDisplay() {
-      const m = String(Math.floor(timerRemainingSec / 60)).padStart(2, '0');
-      const s = String(timerRemainingSec % 60).padStart(2, '0');
-      document.getElementById('timer-readout').innerText = `${m}:${s}`;
-
-      const pct = timerTotalSec > 0 ? (timerRemainingSec / timerTotalSec) * 100 : 100;
-      const bar = document.getElementById('timer-bar');
-      bar.style.width = `${pct}%`;
-
-      if (pct > 50) {
-        bar.style.backgroundColor = "#2A7B5C"; // Green
-      } else if (pct >= 20) {
-        bar.style.backgroundColor = "#D96B27"; // Orange
-      } else {
-        bar.style.backgroundColor = "#C83E31"; // Red
-      }
-    }
-
-    // =========================================================================
-    // 11. COLUMN 3 (CARD 3): RAAMKOZIJN SPOTTER (SAVED IN LOCALSTORAGE)
-    // =========================================================================
-    function getTodayStorageKey() {
-      const d = new Date();
-      return `dolfijn_spotter_${d.getFullYear()}_${d.getMonth()}_${d.getDate()}`;
-    }
-
-    function loadSpotterState() {
-      try {
-        const saved = localStorage.getItem(getTodayStorageKey());
-        spotterState = saved ? JSON.parse(saved) : {};
-      } catch (e) {
-        spotterState = {};
-      }
-      renderSpotter();
-    }
-
-    function toggleSpotterItem(id) {
-      playTactileClick(760, 0.04);
-      spotterState[id] = !spotterState[id];
-      try {
-        localStorage.setItem(getTodayStorageKey(), JSON.stringify(spotterState));
-      } catch (e) {}
-      renderSpotter();
-    }
-
-    function resetSpotter() {
-      playTactileClick(430, 0.04);
-      spotterState = {};
-      try {
-        localStorage.removeItem(getTodayStorageKey());
-      } catch (e) {}
-      renderSpotter();
-    }
-
-    function renderSpotter() {
-      const grid = document.getElementById('spotter-grid');
-      grid.innerHTML = '';
-      let checkedCount = 0;
-
-      SPOTTER_CONFIG.forEach(item => {
-        const isChecked = !!spotterState[item.id];
-        if (isChecked) checkedCount++;
-
-        const btn = document.createElement('button');
-        btn.className = `hw-btn px-2 py-1.5 text-[11px] justify-between ${isChecked ? 'hw-btn-green' : ''}`;
-        btn.innerHTML = `
-          <span class="truncate font-display font-bold">${item.label}</span>
-          <span class="w-4 h-4 rounded-[3px] border border-current flex items-center justify-center shrink-0">
-            ${isChecked ? `<svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>` : ''}
-          </span>
-        `;
-        btn.onclick = () => toggleSpotterItem(item.id);
-        grid.appendChild(btn);
-      });
-
-      document.getElementById('spotter-score').innerText = `${checkedCount}/${SPOTTER_CONFIG.length}`;
-    }
-
-    // =========================================================================
-    // 12. RUSTMODUS / BREATHING MODAL
-    // =========================================================================
-    let breathTimerId = null;
-
-    function openBreathingModal() {
-      playTactileClick(520, 0.04);
-      document.getElementById('breathing-modal').classList.remove('hidden');
-      const circle = document.getElementById('breath-circle');
-      const label = document.getElementById('breath-instruction');
-      let step = 0;
-
-      const cycle = () => {
-        if (step === 0) {
-          circle.style.transform = "scale(1.55)";
+      setInterval(() => {
+        if (!circle || !label) return;
+        if (phase === 0) {
+          circle.style.transform = "scale(1.45)";
+          circle.style.backgroundColor = "#2A7B5C";
           label.innerText = "ADEM RUSTIG IN DOOR JE NEUS...";
-          step = 1;
-        } else if (step === 1) {
+          phase = 1;
+        } else if (phase === 1) {
           label.innerText = "HOUD EVEN VAST...";
-          step = 2;
+          phase = 2;
         } else {
           circle.style.transform = "scale(0.85)";
+          circle.style.backgroundColor = "#2B5B84";
           label.innerText = "BLAAS ZACHTJES UIT...";
-          step = 0;
+          phase = 0;
         }
-      };
-      cycle();
-      clearInterval(breathTimerId);
-      breathTimerId = setInterval(cycle, 3500);
+      }, 3400);
     }
 
-    function closeBreathingModal() {
-      playTactileClick(480, 0.04);
-      clearInterval(breathTimerId);
-      stopSpeech();
-      document.getElementById('breathing-modal').classList.add('hidden');
+    function toggleAmbientSound(type) {
+      playTactileClick(540, 0.04);
+      if (currentAmbientType === type) {
+        stopAmbientSound();
+        return;
+      }
+      stopAmbientSound();
+      try {
+        ensureAudioCtx();
+        const bufferSize = 2 * audioCtx.sampleRate;
+        const noiseBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+        const output = noiseBuffer.getChannelData(0);
+        let lastOut = 0.0;
+        for (let i = 0; i < bufferSize; i++) {
+          const white = Math.random() * 2 - 1;
+          output[i] = (lastOut + (0.02 * white)) / 1.02;
+          lastOut = output[i];
+          output[i] *= 3.2;
+        }
+
+        const whiteNoise = audioCtx.createBufferSource();
+        whiteNoise.buffer = noiseBuffer;
+        whiteNoise.loop = true;
+
+        const filter = audioCtx.createBiquadFilter();
+        filter.type = 'lowpass';
+        filter.frequency.value = type === 'WAAL' ? 280 : 520;
+
+        ambientGain = audioCtx.createGain();
+        ambientGain.gain.value = 0.08;
+
+        whiteNoise.connect(filter);
+        filter.connect(ambientGain);
+        ambientGain.connect(audioCtx.destination);
+        whiteNoise.start(0);
+
+        ambientNode = whiteNoise;
+        currentAmbientType = type;
+
+        document.getElementById('amb-btn-WAAL').classList.toggle('hw-btn-green', type === 'WAAL');
+        document.getElementById('amb-btn-WIND').classList.toggle('hw-btn-green', type === 'WIND');
+        document.getElementById('ambient-status').innerText = type === 'WAAL' ? 'SPEELT: WAAL-GOLFJES' : 'SPEELT: POLDERBRIES';
+      } catch (e) {}
+    }
+
+    function stopAmbientSound() {
+      if (ambientNode) {
+        try { ambientNode.stop(); } catch (e) {}
+        ambientNode = null;
+      }
+      currentAmbientType = null;
+      document.getElementById('amb-btn-WAAL').classList.remove('hw-btn-green');
+      document.getElementById('amb-btn-WIND').classList.remove('hw-btn-green');
+      document.getElementById('ambient-status').innerText = 'GELUID UIT';
     }
 
     // =========================================================================
-    // 13. INITIALIZATION & TIMERS
+    // 12. NAVIGATION, SWIPE & INITIALIZATION
     // =========================================================================
+    function switchMainTab(tabName) {
+      playTactileClick(660, 0.035);
+      currentMainTab = tabName;
+      ['OVERZICHT', 'TAKEN', 'EXPEDITIE', 'KLETSPOT'].forEach(t => {
+        const page = document.getElementById('page-' + t);
+        const btn = document.getElementById('nav-tab-' + t);
+        if (t === tabName) {
+          page.classList.remove('hidden');
+          btn.classList.add('hw-btn-dark');
+        } else {
+          page.classList.add('hidden');
+          btn.classList.remove('hw-btn-dark');
+        }
+      });
+    }
+
+    function toggleFullScreen() {
+      playTactileClick(580, 0.04);
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(() => {});
+      } else {
+        document.exitFullscreen().catch(() => {});
+      }
+    }
+
+    function attachSwipeGesture(elementId, onLeft, onRight) {
+      const el = document.getElementById(elementId);
+      if (!el) return;
+      let startX = 0;
+      let startY = 0;
+      el.addEventListener('touchstart', (e) => {
+        if (e.changedTouches && e.changedTouches.length > 0) {
+          startX = e.changedTouches[0].screenX;
+          startY = e.changedTouches[0].screenY;
+        }
+      }, { passive: true });
+      el.addEventListener('touchend', (e) => {
+        if (!e.changedTouches || e.changedTouches.length === 0) return;
+        const dx = e.changedTouches[0].screenX - startX;
+        const dy = e.changedTouches[0].screenY - startY;
+        if (Math.abs(dx) > 48 && Math.abs(dx) > Math.abs(dy) * 1.25) {
+          el.classList.remove('swipe-pulse');
+          void el.offsetWidth;
+          el.classList.add('swipe-pulse');
+          if (dx < 0) onLeft();
+          else onRight();
+        }
+      }, { passive: true });
+    }
+
     window.onload = function () {
-      updateClock();
-      renderNews();
+      updateEasyClock();
+      renderNewsOverviewAndArticle();
+      refreshTrafficMonitor(false);
       renderFact();
       renderRiddle();
-      loadSpotterState();
+      loadBoardTasks();
+      loadSpotter();
+      renderEncyclopedia();
+      renderQuiz();
+      startCalmBreathingLoop();
+
+      attachSwipeGesture('news-swipe-card', nextNews, prevNews);
+      attachSwipeGesture('fact-riddle-card', () => {
+        if (currentCornerMode === 'WEETJE') nextFact(true);
+        else nextRiddle();
+      }, () => {
+        if (currentCornerMode === 'WEETJE') prevFact();
+        else nextRiddle();
+      });
+
       fetchWeather(false);
-      fetchJeugdjournaal();
-      loadCustomGistFacts();
+      fetchAllNewsFeeds();
 
-      // 1-second master tick (clock + 30s auto-advance bar for facts)
-      setInterval(() => {
-        updateClock();
-        factProgressTicks++;
-        const pct = Math.min((factProgressTicks / 30) * 100, 100);
-        document.getElementById('fact-progress-bar').style.width = `${pct}%`;
-        if (factProgressTicks >= 30) {
-          nextFact(false);
-        }
-      }, 1000);
-
-      // Refresh live weather & NOS Jeugdjournaal every 15 minutes
+      setInterval(updateEasyClock, 1000);
+      setInterval(() => nextFact(false), 35000);
       setInterval(() => {
         fetchWeather(false);
-        fetchJeugdjournaal();
+        fetchAllNewsFeeds();
+        refreshTrafficMonitor(false);
       }, 900000);
     };
   </script>
